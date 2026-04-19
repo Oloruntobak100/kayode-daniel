@@ -29,7 +29,7 @@ export default function ChatInput({
     <div
       className={cn(
         "glass-panel flex w-full items-center gap-2 rounded-pill shadow-soft",
-        variant === "hero" && "max-w-md px-2.5 py-1.5",
+        variant === "hero" && "max-w-lg px-3 py-2",
         variant === "dock" && "gap-3 px-4 py-3"
       )}
     >
@@ -52,12 +52,12 @@ export default function ChatInput({
         onClick={submit}
         className={cn(
           "inline-flex shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-soft transition hover:brightness-105",
-          variant === "hero" && "h-8 w-8",
+          variant === "hero" && "h-9 w-9",
           variant === "dock" && "h-11 w-11"
         )}
       >
         {variant === "hero" ? (
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          <ArrowRight className="h-4 w-4" aria-hidden />
         ) : (
           <ArrowUp className="h-5 w-5" aria-hidden />
         )}

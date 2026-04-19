@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { DM_Sans, JetBrains_Mono, Montserrat, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+
+/** Bold display for hero headline (reference: Montserrat / geometric sans) */
+const hero = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-hero",
+  weight: ["600", "700", "800"],
+});
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -34,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
+      className={`${hero.variable} ${display.variable} ${body.variable} ${mono.variable}`}
     >
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         {children}

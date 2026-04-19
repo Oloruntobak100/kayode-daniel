@@ -56,25 +56,26 @@ export default function NavPills({
             data-cursor-hover
             onClick={() => onSelect(id)}
             className={cn(
-              "glass-pill inline-flex flex-col items-center font-medium text-foreground/90 transition sm:flex-row",
+              /* Icon + label always in a row with breathing room between them */
+              "glass-pill inline-flex flex-row items-center justify-center font-medium text-foreground/90 transition",
               compact && singleRow
-                ? "min-w-[3.5rem] shrink-0 gap-0 px-1.5 py-1 text-[9px] sm:min-w-[4rem] sm:px-2 sm:py-1.5 sm:text-[10px]"
+                ? "min-w-[4.75rem] shrink-0 gap-2 px-2.5 py-2 text-[10px] sm:min-w-[5.25rem] sm:gap-2.5 sm:px-3 sm:py-2 sm:text-xs"
                 : compact
-                  ? "min-w-[4.25rem] gap-0.5 px-2 py-1.5 text-[10px] sm:min-w-[4.75rem] sm:gap-1 sm:px-2.5 sm:py-1.5 sm:text-xs"
-                  : "min-w-[5.5rem] gap-1 px-4 py-2 text-xs sm:flex-row sm:gap-2 sm:text-sm",
+                  ? "min-w-[4.75rem] gap-2 px-3 py-2 text-[10px] sm:min-w-[5.25rem] sm:gap-2.5 sm:px-3 sm:py-2 sm:text-xs"
+                  : "min-w-[6rem] gap-2.5 px-4 py-2 text-xs sm:gap-3 sm:text-sm",
               isActive && "border-accent/40 bg-white/90 ring-2 ring-accent/25"
             )}
           >
             <Icon
               className={cn(
-                "text-accent",
-                compact && singleRow && "h-2.5 w-2.5 sm:h-3 sm:w-3",
-                compact && !singleRow && "h-3 w-3 sm:h-3.5 sm:w-3.5",
-                !compact && "h-4 w-4"
+                "shrink-0 text-accent",
+                compact && singleRow && "h-3.5 w-3.5 sm:h-4 sm:w-4",
+                compact && !singleRow && "h-3.5 w-3.5 sm:h-4 sm:w-4",
+                !compact && "h-4 w-4 sm:h-[18px] sm:w-[18px]"
               )}
               aria-hidden
             />
-            <span>{label}</span>
+            <span className="leading-tight">{label}</span>
           </MagneticButton>
         );
       })}
