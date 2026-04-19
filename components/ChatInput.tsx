@@ -30,7 +30,7 @@ export default function ChatInput({
       className={cn(
         "glass-panel flex w-full items-center gap-2 rounded-pill shadow-soft",
         variant === "hero" && "max-w-lg px-3 py-2",
-        variant === "dock" && "gap-3 px-4 py-3"
+        variant === "dock" && "gap-2 px-3 py-2 sm:gap-3 sm:px-4"
       )}
     >
       <input
@@ -53,7 +53,7 @@ export default function ChatInput({
         className={cn(
           "inline-flex shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-soft transition hover:brightness-105",
           variant === "hero" && "h-9 w-9",
-          variant === "dock" && "h-11 w-11"
+          variant === "dock" && "h-10 w-10 sm:h-11 sm:w-11"
         )}
       >
         {variant === "hero" ? (

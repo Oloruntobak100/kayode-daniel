@@ -59,7 +59,7 @@ export default function SectionLayout({
         Home
       </MagneticButton>
 
-      <div className="mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-44 pt-24 md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:gap-14 md:px-12 md:pb-48 md:pt-32">
+      <div className="mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-36 pt-24 md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:gap-14 md:px-12 md:pb-40 md:pt-32">
         <aside className="w-full min-w-0 md:sticky md:top-36 md:h-fit md:self-start">
           <SectionVisual section={activeSection} />
         </aside>
@@ -81,10 +81,24 @@ export default function SectionLayout({
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:px-6">
-          <ChatInput onSubmit={onChatSubmit} variant="dock" />
-          <NavPills active={activeSection} onSelect={onSelectSection} />
-          <p className="text-center text-[11px] text-muted">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
+          {/* Single row: chat + nav — frees vertical space above */}
+          <div className="flex flex-row flex-nowrap items-center gap-2 sm:gap-3 md:gap-4">
+            <div className="min-w-0 w-[min(100%,18rem)] shrink-0 sm:w-auto sm:max-w-md sm:flex-[0.85] md:max-w-lg md:flex-[1]">
+              <ChatInput onSubmit={onChatSubmit} variant="dock" />
+            </div>
+            <div className="min-h-[2.75rem] min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-h-[2.75rem] items-center justify-start pb-px">
+                <NavPills
+                  active={activeSection}
+                  onSelect={onSelectSection}
+                  density="compact"
+                  layout="singleRow"
+                />
+              </div>
+            </div>
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted">
             Built with Next.js — narrative source in{" "}
             <code className="font-mono text-[10px]">lib/portfolio-source.ts</code>
           </p>
