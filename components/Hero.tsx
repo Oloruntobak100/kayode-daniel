@@ -8,9 +8,9 @@ import { staggerContainer, staggerItem } from "@/lib/animations";
 import type { SectionId } from "@/lib/content";
 import { profile } from "@/lib/content";
 
-/** Intrinsic size of exported `public/avatar-hero.png` — update if asset changes */
-const AVATAR_W = 160;
-const AVATAR_H = 200;
+/** Intrinsic size of hero avatar — update if asset changes */
+const AVATAR_W = 96;
+const AVATAR_H = 120;
 
 type Props = {
   onOpenSection: (id: SectionId) => void;
@@ -20,30 +20,27 @@ type Props = {
 export default function Hero({ onOpenSection, onChatSubmit }: Props) {
   return (
     <motion.section
-      className="relative z-10 flex min-h-screen flex-col items-center px-6 pb-28 pt-16 sm:pb-32 sm:pt-20"
+      className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center gap-1 px-3 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-[max(0.35rem,env(safe-area-inset-top))] sm:gap-1.5 sm:px-5"
       variants={staggerContainer}
       initial={false}
       animate="visible"
       exit="exit"
     >
-      {/* Text first (toukoum-style), then avatar — transparent PNG */}
+      {/* Compact stack — headline stays small so greeting → title → avatar → chat → nav fit in 100dvh */}
       <motion.p
         variants={staggerItem}
-        className="mb-2 text-center text-base font-medium text-foreground sm:text-lg"
+        className="text-center text-[11px] font-medium leading-none text-foreground sm:text-xs"
       >
         {profile.greeting}
       </motion.p>
       <motion.h1
         variants={staggerItem}
-        className="font-display mx-auto max-w-3xl text-center text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl"
+        className="font-display mx-auto max-w-[min(100%,22rem)] px-2 text-center text-[11px] font-semibold leading-[1.25] tracking-tight text-foreground sm:max-w-xl sm:text-xs md:text-sm"
       >
         {profile.headline}
       </motion.h1>
 
-      <motion.div
-        variants={staggerItem}
-        className="mt-8 flex shrink-0 justify-center sm:mt-10"
-      >
+      <motion.div variants={staggerItem} className="flex shrink-0 justify-center py-0.5">
         <Image
           src={profile.avatarSrc}
           alt=""
@@ -51,19 +48,27 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
           height={AVATAR_H}
           priority
           sizes={`${AVATAR_W}px`}
-          className="h-auto max-h-[200px] w-auto max-w-[160px] select-none drop-shadow-md"
+          className="h-auto max-h-[92px] w-auto max-w-[92px] select-none drop-shadow-md sm:max-h-[104px] sm:max-w-[104px]"
         />
       </motion.div>
 
-      <motion.div variants={staggerItem} className="mt-12 w-full max-w-xl px-2">
+      <motion.div variants={staggerItem} className="w-full max-w-md px-1">
         <ChatInput variant="hero" onSubmit={onChatSubmit} />
       </motion.div>
 
+      {/* Single row + horizontal swipe if needed — avoids extra wrap height */}
       <motion.div
         variants={staggerItem}
-        className="mt-10 flex w-full justify-center px-2"
+        className="w-full max-w-[min(100vw,36rem)] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:overflow-visible"
       >
-        <NavPills active={null} onSelect={onOpenSection} />
+        <div className="flex justify-center pb-0.5 sm:pb-0">
+          <NavPills
+            active={null}
+            onSelect={onOpenSection}
+            density="compact"
+            layout="singleRow"
+          />
+        </div>
       </motion.div>
     </motion.section>
   );

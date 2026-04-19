@@ -32,8 +32,8 @@ export const profile = {
   metrics: [...meMetrics],
   /** Home / hero — transparent PNG in `public/avatar-hero.png` (`npm run copy:hero`). */
   avatarSrc: "/avatar-hero.png",
-  /** Me section left column — photo in `public/profile.jpg` (`npm run copy:profile`). */
-  photoSrc: "/profile.jpg",
+  /** Me / Experience sidebar portrait — `public/profile-me.png`. */
+  photoSrc: "/profile-me.png",
   tags: [...profileTags],
   currentlyBuilding: {
     title: "Currently pursuing",
