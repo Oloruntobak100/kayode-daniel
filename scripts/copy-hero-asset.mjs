@@ -10,6 +10,7 @@ const dest = path.join(
 
 const home = process.env.USERPROFILE || process.env.HOME || "";
 const names = [
+  "c__Users_hP_AppData_Roaming_Cursor_User_workspaceStorage_d31b4b000aca541e9b9ab8a1422d4012_images_animated-young-business-man-avatar-600nw-25749510951776625654-removebg-preview__1_-f4900d4a-db06-463a-bf7d-94f59a916de1.png",
   "c__Users_hP_AppData_Roaming_Cursor_User_workspaceStorage_d31b4b000aca541e9b9ab8a1422d4012_images_animated-young-business-man-avatar-600nw-25749510951776625654-removebg-preview-8488fe8a-9981-4884-8ca8-d3dca4f1f320.png",
   "c__Users_hP_AppData_Roaming_Cursor_User_workspaceStorage_d31b4b000aca541e9b9ab8a1422d4012_images_animated-young-business-man-avatar-600nw-25749510951776625654-removebg-preview-a6567acc-516f-4e15-b024-61955c880ea8.png",
 ];

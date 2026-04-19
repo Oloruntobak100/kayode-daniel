@@ -8,6 +8,10 @@ import { staggerContainer, staggerItem } from "@/lib/animations";
 import type { SectionId } from "@/lib/content";
 import { profile } from "@/lib/content";
 
+/** Intrinsic size of exported `public/avatar-hero.png` — update if asset changes */
+const AVATAR_W = 185;
+const AVATAR_H = 231;
+
 type Props = {
   onOpenSection: (id: SectionId) => void;
   onChatSubmit: (value: string) => void;
@@ -22,21 +26,7 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
       animate="visible"
       exit="exit"
     >
-      {/* Tall narrow PNG — fixed width band, generous height so full-body fits via object-contain */}
-      <motion.div
-        variants={staggerItem}
-        className="relative mx-auto mb-6 h-[min(58vh,520px)] w-[min(72vw,220px)] max-w-[240px] overflow-hidden rounded-[2rem] shadow-glass sm:h-[min(68vh,560px)] sm:w-[240px]"
-      >
-        <Image
-          src={profile.avatarSrc}
-          alt=""
-          fill
-          priority
-          sizes="(max-width:640px) 72vw, 240px"
-          className="object-contain object-bottom bg-white"
-        />
-      </motion.div>
-
+      {/* Text first (toukoum-style), then avatar — resized asset ~185×231 */}
       <motion.p
         variants={staggerItem}
         className="mb-2 text-center text-base font-medium text-foreground sm:text-lg"
@@ -49,6 +39,21 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
       >
         {profile.headline}
       </motion.h1>
+
+      <motion.div
+        variants={staggerItem}
+        className="mt-8 flex shrink-0 justify-center sm:mt-10"
+      >
+        <Image
+          src={profile.avatarSrc}
+          alt=""
+          width={AVATAR_W}
+          height={AVATAR_H}
+          priority
+          sizes={`${AVATAR_W}px`}
+          className="h-auto max-h-[231px] w-auto max-w-[185px] select-none rounded-2xl shadow-glass"
+        />
+      </motion.div>
 
       <motion.div variants={staggerItem} className="mt-12 w-full max-w-xl px-2">
         <ChatInput variant="hero" onSubmit={onChatSubmit} />
