@@ -3,6 +3,7 @@
 import {
   BookOpen,
   Briefcase,
+  History,
   Layers,
   Mail,
   UserRound,
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 
 const NAV: { id: SectionId; label: string; Icon: typeof UserRound }[] = [
   { id: "me", label: "Me", Icon: UserRound },
+  { id: "experience", label: "Experience", Icon: History },
   { id: "projects", label: "Projects", Icon: Briefcase },
   { id: "skills", label: "Skills", Icon: Layers },
   { id: "blog", label: "Blog", Icon: BookOpen },

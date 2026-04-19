@@ -7,6 +7,7 @@ import NavPills from "@/components/NavPills";
 import SectionVisual from "@/components/SectionVisual";
 import Blog from "@/components/sections/Blog";
 import Contact from "@/components/sections/Contact";
+import Experience from "@/components/sections/Experience";
 import Me from "@/components/sections/Me";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
@@ -31,6 +32,8 @@ export default function SectionLayout({
     switch (activeSection) {
       case "me":
         return <Me />;
+      case "experience":
+        return <Experience />;
       case "projects":
         return <Projects />;
       case "skills":
@@ -82,8 +85,8 @@ export default function SectionLayout({
           <ChatInput onSubmit={onChatSubmit} variant="dock" />
           <NavPills active={activeSection} onSelect={onSelectSection} />
           <p className="text-center text-[11px] text-muted">
-            Built with Next.js — swap copy in{" "}
-            <code className="font-mono text-[10px]">lib/content.ts</code>
+            Built with Next.js — narrative source in{" "}
+            <code className="font-mono text-[10px]">lib/portfolio-source.ts</code>
           </p>
         </div>
       </div>

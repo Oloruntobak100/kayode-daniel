@@ -10,12 +10,14 @@ type Props = {
 };
 
 export default function SectionVisual({ section }: Props) {
-  const src = section === "me" ? profile.photoSrc : profile.avatarSrc;
+  const usePortrait = section === "me" || section === "experience";
+  const src = usePortrait ? profile.photoSrc : profile.avatarSrc;
 
   return (
     <div
       className={cn(
         "relative aspect-[4/5] min-h-[280px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-black/10 shadow-glass",
+        section === "experience" && "ring-2 ring-amber-400/15",
         section === "projects" && "ring-2 ring-accent/15",
         section === "skills" && "ring-2 ring-emerald-400/15",
         section === "blog" && "ring-2 ring-violet-400/15",
@@ -25,7 +27,7 @@ export default function SectionVisual({ section }: Props) {
       <Image
         src={src}
         alt={
-          section === "me"
+          usePortrait
             ? `Portrait of ${profile.name}`
             : `${profile.name}`
         }

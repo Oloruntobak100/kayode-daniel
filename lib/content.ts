@@ -1,7 +1,25 @@
-/** Central place for copy & data — edit here only. */
+/**
+ * UI-facing content — imported by components.
+ * Canonical narrative & credentials live in `./portfolio-source.ts`; keep that file updated first.
+ */
+
+import {
+  elevatorPitch,
+  enterpriseSystems,
+  fullStackProducts,
+  healthcareDeployments,
+  meIntroduction,
+  meMetrics,
+  priorExperience,
+  professionalSummary,
+  professionalTitles,
+  profileTags,
+  techStack,
+} from "./portfolio-source";
 
 export type SectionId =
   | "me"
+  | "experience"
   | "projects"
   | "skills"
   | "blog"
@@ -9,101 +27,63 @@ export type SectionId =
 
 export const profile = {
   firstName: "Kayode",
-  headline: "Full Stack Developer & Technical Consultant",
+  headline: professionalTitles,
   greeting: "Hey, I'm Kayode 👋",
   name: "Kayode",
   location: "Lagos, Nigeria",
-  bio: `I'm a full stack engineer and consultant focused on shipping reliable SaaS products, AI-assisted workflows, and automation that saves teams real time. I enjoy turning ambiguous requirements into calm, maintainable systems.`,
+  meEyebrow: meIntroduction.eyebrow,
+  meSubtitle: meIntroduction.subtitle,
+  meParagraphs: [...meIntroduction.paragraphs],
+  metrics: [...meMetrics],
   /** Home / hero — transparent PNG in `public/avatar-hero.png` (`npm run copy:hero`). */
   avatarSrc: "/avatar-hero.png",
-  /** Me section left column — photo in `public/profile.jpg` (run `npm run copy:profile`). */
+  /** Me section left column — photo in `public/profile.jpg` (`npm run copy:profile`). */
   photoSrc: "/profile.jpg",
-  tags: [
-    "Full Stack Dev",
-    "AI Automation",
-    "SaaS Builder",
-    "Freelance Consultant",
-    "MSc Information Systems",
-  ],
+  tags: [...profileTags],
   currentlyBuilding: {
-    title: "Currently building",
-    projectName: "Atlas — internal ops copilot",
+    title: "Currently pursuing",
+    projectName: "MSc Information Systems",
     description:
-      "A Next.js + AI toolkit for consultants to summarize meetings and draft follow-ups.",
+      "Focus areas: automation, enterprise data systems, and scalable architecture — applied to real delivery contexts (ERP, healthcare MIS, cloud deployments).",
   },
 } as const;
 
-export const projects = [
-  {
-    id: "atlas",
-    name: "Atlas Ops Copilot",
-    description:
-      "Meeting capture, summarization, and CRM sync for small consulting teams.",
-    tech: ["Next.js", "TypeScript", "OpenAI", "PostgreSQL"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-  },
-  {
-    id: "ledgerflow",
-    name: "Ledgerflow",
-    description:
-      "Automated invoicing dashboard with Stripe webhooks and email digests.",
-    tech: ["React", "Node.js", "Redis", "Tailwind"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-  },
-  {
-    id: "fieldnote",
-    name: "Fieldnote",
-    description:
-      "Offline-first mobile companion for site surveys with sync to cloud storage.",
-    tech: ["React Native", "SQLite", "S3", "TypeScript"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-  },
-] as const;
+/** Re-export structured source blocks for rich Me / future sections */
+export {
+  elevatorPitch,
+  enterpriseSystems,
+  experienceOverview,
+  healthcareDeployments,
+  meMetrics,
+  positioningStatement,
+  priorExperience,
+  professionalSummary,
+  professionalTitles,
+} from "./portfolio-source";
 
-export const skillsByCategory = [
-  {
-    id: "frontend",
-    title: "Frontend",
-    skills: [
-      "HTML",
-      "CSS",
-      "TypeScript",
-      "React",
-      "Next.js",
-      "Tailwind CSS",
-      "Framer Motion",
-    ],
-  },
-  {
-    id: "backend",
-    title: "Backend",
-    skills: ["Node.js", "REST APIs", "GraphQL", "Prisma", "Auth", "Webhooks"],
-  },
-  {
-    id: "databases",
-    title: "Databases",
-    skills: ["PostgreSQL", "Redis", "MongoDB", "Supabase"],
-  },
-  {
-    id: "automation",
-    title: "Automation",
-    skills: ["CI/CD", "Docker", "GitHub Actions", "n8n", "Zapier"],
-  },
-  {
-    id: "ai",
-    title: "AI / ML Tools",
-    skills: [
-      "OpenAI API",
-      "Vercel AI SDK",
-      "LangChain",
-      "Embeddings",
-      "RAG patterns",
-    ],
-  },
-] as const;
+export type ProjectItem = {
+  id: string;
+  name: string;
+  description: string;
+  tech: readonly string[];
+  liveUrl: string;
+  githubUrl: string;
+};
+
+export const projects: readonly ProjectItem[] = fullStackProducts.map((p) => ({
+  id: p.id,
+  name: p.name,
+  description: p.description,
+  tech: [...p.tech],
+  liveUrl: p.liveUrl,
+  githubUrl: p.githubUrl,
+}));
+
+export const skillsByCategory = techStack.map((cat) => ({
+  id: cat.id,
+  title: cat.title,
+  skills: [...cat.items],
+}));
 
 export const blogPosts = [
   {
@@ -135,7 +115,7 @@ export const blogPosts = [
 export const socialLinks = [
   {
     label: "GitHub",
-    href: "https://github.com",
+    href: "https://github.com/Oloruntobak100",
     icon: "github" as const,
   },
   {
