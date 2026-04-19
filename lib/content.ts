@@ -4,14 +4,9 @@
  */
 
 import {
-  elevatorPitch,
-  enterpriseSystems,
   fullStackProducts,
-  healthcareDeployments,
   meIntroduction,
   meMetrics,
-  priorExperience,
-  professionalSummary,
   professionalTitles,
   profileTags,
   techStack,
