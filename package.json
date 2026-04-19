@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "node scripts/clean.mjs",
     "copy:hero": "node scripts/copy-hero-asset.mjs",
+    "copy:profile": "node scripts/copy-profile-photo.mjs",
     "dev": "next dev --turbo",
     "dev:webpack": "next dev",
     "dev:reset": "npm run clean && next dev --turbo",

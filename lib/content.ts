@@ -16,7 +16,7 @@ export const profile = {
   bio: `I'm a full stack engineer and consultant focused on shipping reliable SaaS products, AI-assisted workflows, and automation that saves teams real time. I enjoy turning ambiguous requirements into calm, maintainable systems.`,
   /** Home / hero — transparent PNG in `public/avatar-hero.png` (`npm run copy:hero`). */
   avatarSrc: "/avatar-hero.png",
-  /** Me section left column (replace with your photo in `public/profile.jpg` if you use one). */
+  /** Me section left column — photo in `public/profile.jpg` (run `npm run copy:profile`). */
   photoSrc: "/profile.jpg",
   tags: [
     "Full Stack Dev",
