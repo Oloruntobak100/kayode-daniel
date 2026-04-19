@@ -14,7 +14,7 @@ export const profile = {
   name: "Kayode",
   location: "Lagos, Nigeria",
   bio: `I'm a full stack engineer and consultant focused on shipping reliable SaaS products, AI-assisted workflows, and automation that saves teams real time. I enjoy turning ambiguous requirements into calm, maintainable systems.`,
-  /** Home / hero image — 3D avatar PNG in `public/avatar-hero.png` (run `npm run copy:hero` after replacing the asset). */
+  /** Home / hero — transparent PNG in `public/avatar-hero.png` (`npm run copy:hero`). */
   avatarSrc: "/avatar-hero.png",
   /** Me section left column (replace with your photo in `public/profile.jpg` if you use one). */
   photoSrc: "/profile.jpg",

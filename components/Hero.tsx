@@ -9,8 +9,8 @@ import type { SectionId } from "@/lib/content";
 import { profile } from "@/lib/content";
 
 /** Intrinsic size of exported `public/avatar-hero.png` — update if asset changes */
-const AVATAR_W = 185;
-const AVATAR_H = 231;
+const AVATAR_W = 160;
+const AVATAR_H = 200;
 
 type Props = {
   onOpenSection: (id: SectionId) => void;
@@ -26,7 +26,7 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
       animate="visible"
       exit="exit"
     >
-      {/* Text first (toukoum-style), then avatar — resized asset ~185×231 */}
+      {/* Text first (toukoum-style), then avatar — transparent PNG */}
       <motion.p
         variants={staggerItem}
         className="mb-2 text-center text-base font-medium text-foreground sm:text-lg"
@@ -51,7 +51,7 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
           height={AVATAR_H}
           priority
           sizes={`${AVATAR_W}px`}
-          className="h-auto max-h-[231px] w-auto max-w-[185px] select-none rounded-2xl shadow-glass"
+          className="h-auto max-h-[200px] w-auto max-w-[160px] select-none drop-shadow-md"
         />
       </motion.div>
 
