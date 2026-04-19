@@ -8,7 +8,7 @@ import SectionLayout from "@/components/SectionLayout";
 import { useSectionState } from "@/hooks/useSectionState";
 
 export default function Home() {
-  const { phase, activeSection, openSection } = useSectionState();
+  const { phase, activeSection, openSection, goHero } = useSectionState();
 
   const handleChatSubmit = (value: string) => {
     void value;
@@ -48,6 +48,7 @@ export default function Home() {
               activeSection={activeSection}
               onSelectSection={openSection}
               onChatSubmit={handleChatSubmit}
+              onBackHome={goHero}
             />
           </motion.div>
         )}

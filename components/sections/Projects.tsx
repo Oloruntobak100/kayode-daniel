@@ -11,7 +11,7 @@ export default function Projects() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto max-w-content pb-8"
+      className="w-full max-w-none pb-8"
     >
       <motion.div variants={staggerItem} className="mb-10">
         <p className="text-sm font-medium uppercase tracking-wide text-muted">

@@ -36,7 +36,7 @@ export default function Contact() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto grid max-w-content gap-12 pb-8 md:grid-cols-2 md:gap-16"
+      className="grid w-full max-w-none gap-12 pb-8 md:grid-cols-2 md:gap-16"
     >
       <motion.div variants={staggerItem} className="space-y-4">
         <p className="text-sm font-medium uppercase tracking-wide text-muted">

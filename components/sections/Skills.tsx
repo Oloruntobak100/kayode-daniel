@@ -13,7 +13,7 @@ export default function Skills() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto max-w-content space-y-10 pb-8"
+      className="w-full max-w-none space-y-10 pb-8"
     >
       <motion.div variants={staggerItem}>
         <p className="text-sm font-medium uppercase tracking-wide text-muted">
