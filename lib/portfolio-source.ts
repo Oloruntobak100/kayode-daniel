@@ -200,6 +200,66 @@ export const healthcareDeployments = {
   ],
 } as const;
 
+/**
+ * Experience section — vertical timeline (dates & locations as provided).
+ * Program and healthcare lines are derived from the blocks above.
+ */
+export const experienceTimeline = [
+  {
+    id: "maybeach",
+    organization: "Maybeach Technologies",
+    location: "Abuja, Nigeria",
+    periodLabel: "Sep 2019 – Jan 2021",
+    role: "Project Manager",
+    eyebrow: enterpriseSystems.sectionTitle,
+    intro: enterpriseSystems.intro,
+    programs: enterpriseSystems.programs.map(
+      (p) => `${p.shortName} — ${p.name}`
+    ),
+    roleSectionTitle: "Role & contribution",
+    roleBullets: [...enterpriseSystems.roleSummary],
+  },
+  {
+    id: "hyella",
+    organization: "Hyella Limited",
+    location: "Lagos, Nigeria",
+    periodLabel: "Jan 2021 – Mar 2024",
+    role: "System Analyst / Deployment Engineer",
+    eyebrow: healthcareDeployments.sectionTitle,
+    intro: healthcareDeployments.intro,
+    hospitalsTitle: "Hospitals & clients",
+    hospitals: [...healthcareDeployments.hospitals],
+    deliveryTitle: "Delivery scope",
+    deliveryBullets: [...healthcareDeployments.deliveryHighlights],
+    impactTitle: "Impact",
+    impactBullets: [...healthcareDeployments.impact],
+  },
+  {
+    id: "northsnow",
+    organization: "Northsnow",
+    location: "United Kingdom",
+    periodLabel: "Mar 2024 – Present",
+    role: "Lead System Architect & Lead Developer",
+    eyebrow: "Full-stack product delivery",
+    intro:
+      "I lead system architecture and full-stack development for Northsnow's web and mobile applications — translating product goals into scalable, production-ready systems across our suite of platforms.",
+    productHighlight:
+      "Products include Godea, Quantiva, PainScope, PayPill, Leadii, and Accounting Automation — spanning analytics and operations, healthcare scenarios, payments, lead management, and finance automation.",
+    stackTitle: "Core tools & deployment",
+    stackBullets: [
+      "Next.js, React, TypeScript",
+      "Node.js, REST & event-driven APIs",
+      "BullMQ, Redis (queues & caching)",
+      "GitHub — collaboration, reviews, CI/CD hooks",
+      "PostgreSQL, Docker, cloud-native deployments",
+    ],
+    deliveryBullets: [
+      "End-to-end ownership from architecture through deployment and iteration",
+      "Reliability, performance, and security treated as first-class concerns",
+    ],
+  },
+] as const;
+
 /** Product-style portfolio pieces — frame as solutions */
 export const fullStackProducts = [
   {

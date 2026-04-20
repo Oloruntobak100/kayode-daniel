@@ -42,6 +42,7 @@ export {
   elevatorPitch,
   enterpriseSystems,
   experienceOverview,
+  experienceTimeline,
   healthcareDeployments,
   meMetrics,
   positioningStatement,
