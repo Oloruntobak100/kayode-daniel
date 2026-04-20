@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
@@ -16,12 +17,17 @@ import {
   Workflow,
   Wind,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { skillsMarqueeItems as strip } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 type StripItem = (typeof strip)[number];
+
+/** Stable row splits — avoids new array refs each render breaking the marquee loop. */
+const MARQUEE_MID = Math.ceil(strip.length / 2);
+const SKILL_ROW_TOP = strip.slice(0, MARQUEE_MID);
+const SKILL_ROW_BOTTOM = strip.slice(MARQUEE_MID);
 
 function iconForSkill(name: string): LucideIcon {
   const n = name.toLowerCase();
@@ -80,6 +86,11 @@ function SkillStripCard({ item }: { item: StripItem }) {
   );
 }
 
+/**
+ * Pixel-based infinite marquee via requestAnimationFrame.
+ * Parent Framer Motion wrappers use `transform`, which breaks nested CSS keyframe
+ * animations in some browsers — driving translate3d from JS avoids that entirely.
+ */
 function MarqueeTrack({
   items,
   direction,
@@ -87,35 +98,106 @@ function MarqueeTrack({
 }: {
   items: readonly StripItem[];
   direction: "left" | "right";
-  /** Loop duration; wider strips feel smoother slightly faster. */
   durationSec?: number;
 }) {
-  const doubled = [...items, ...items];
-  const trackClass =
-    direction === "left"
-      ? "marquee-track-scroll-left"
-      : "marquee-track-scroll-right";
+  /** `null` during SSR — treat as “motion ok” until mounted. */
+  const prefersReducedMotion = useReducedMotion() === true;
+  const innerRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const pausedRef = useRef(false);
+  const rightSeedRef = useRef(false);
+  const rafRef = useRef(0);
+
+  const loopItems = prefersReducedMotion ? [...items] : [...items, ...items];
+  const seconds = durationSec ?? 30;
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const el = innerRef.current;
+    if (!el) return;
+
+    let cancelled = false;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      if (cancelled) return;
+
+      const seg = el.scrollWidth / 2;
+      const dt = Math.min((now - last) / 1000, 0.08);
+      last = now;
+
+      if (seg > 2) {
+        const speed = seg / seconds;
+
+        if (direction === "right") {
+          if (!rightSeedRef.current) {
+            offsetRef.current = -seg;
+            rightSeedRef.current = true;
+          }
+          if (!pausedRef.current) {
+            offsetRef.current += speed * dt;
+            while (offsetRef.current >= 0) {
+              offsetRef.current -= seg;
+            }
+          }
+        } else if (!pausedRef.current) {
+          offsetRef.current -= speed * dt;
+          while (offsetRef.current <= -seg) {
+            offsetRef.current += seg;
+          }
+        }
+
+        el.style.transform = `translate3d(${offsetRef.current}px,0,0)`;
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    const ro = new ResizeObserver(() => {
+      if (direction === "left") {
+        offsetRef.current = 0;
+      } else {
+        rightSeedRef.current = false;
+        offsetRef.current = 0;
+      }
+    });
+    ro.observe(el);
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      rightSeedRef.current = false;
+      offsetRef.current = 0;
+    };
+  }, [direction, seconds, prefersReducedMotion]);
+
+  const maskStyle = {
+    maskImage:
+      "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+    WebkitMaskImage:
+      "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+  } as const;
 
   return (
     <div
-      className="marquee-hover-pause relative overflow-hidden py-2"
-      style={
-        {
-          "--marquee-duration": `${durationSec ?? 30}s`,
-          maskImage:
-            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-        } as CSSProperties
-      }
+      className="relative overflow-hidden py-2"
+      style={maskStyle as CSSProperties}
+      onMouseEnter={() => {
+        pausedRef.current = true;
+      }}
+      onMouseLeave={() => {
+        pausedRef.current = false;
+      }}
     >
       <div
-        className={cn(
-          "flex w-max gap-4 pr-4 [backface-visibility:hidden]",
-          trackClass
-        )}
+        ref={innerRef}
+        className="flex w-max gap-4 pr-4 will-change-transform"
       >
-        {doubled.map((item, idx) => (
+        {loopItems.map((item, idx) => (
           <SkillStripCard key={`${item.id}-${idx}`} item={item} />
         ))}
       </div>
@@ -124,10 +206,6 @@ function MarqueeTrack({
 }
 
 export default function Skills() {
-  const mid = Math.ceil(strip.length / 2);
-  const rowForward = strip.slice(0, mid);
-  const rowReverse = strip.slice(mid);
-
   return (
     <motion.div
       variants={staggerContainer}
@@ -161,8 +239,12 @@ export default function Skills() {
       </motion.div>
 
       <div className="space-y-6">
-        <MarqueeTrack items={rowForward} direction="right" durationSec={28} />
-        <MarqueeTrack items={rowReverse} direction="left" durationSec={32} />
+        <MarqueeTrack items={SKILL_ROW_TOP} direction="right" durationSec={28} />
+        <MarqueeTrack
+          items={SKILL_ROW_BOTTOM}
+          direction="left"
+          durationSec={32}
+        />
       </div>
 
       <motion.p
