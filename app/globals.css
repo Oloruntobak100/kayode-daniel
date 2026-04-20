@@ -30,4 +30,50 @@ body {
   .glass-pill {
     @apply glass-panel rounded-pill shadow-soft;
   }
+
+  /**
+   * Infinite horizontal marquees — defined here so animations always ship
+   * (Tailwind JIT must see full class strings; CSS avoids dynamic-class misses).
+   * Top row: .marquee-track-scroll-right — content moves visually toward the right.
+   * Bottom row: .marquee-track-scroll-left — content moves toward the left.
+   */
+  .marquee-track-scroll-left {
+    animation: marquee-scroll-left var(--marquee-duration, 30s) linear infinite;
+    will-change: transform;
+  }
+
+  .marquee-track-scroll-right {
+    animation: marquee-scroll-right var(--marquee-duration, 30s) linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes marquee-scroll-left {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes marquee-scroll-right {
+    from {
+      transform: translate3d(-50%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .marquee-hover-pause:hover .marquee-track-scroll-left,
+  .marquee-hover-pause:hover .marquee-track-scroll-right {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track-scroll-left,
+    .marquee-track-scroll-right {
+      animation: none !important;
+    }
+  }
 }

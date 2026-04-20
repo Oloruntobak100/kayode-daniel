@@ -1,12 +1,20 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
+  ClipboardCheck,
   Cloud,
   Code2,
   Database,
+  GitBranch,
+  HardDrive,
+  Layers,
+  ListOrdered,
+  Package,
   Workflow,
+  Wind,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/animations";
@@ -17,6 +25,13 @@ type StripItem = (typeof strip)[number];
 
 function iconForSkill(name: string): LucideIcon {
   const n = name.toLowerCase();
+  if (n.includes("react") && !n.includes("next")) return Layers;
+  if (n.includes("tailwind")) return Wind;
+  if (n.includes("git")) return GitBranch;
+  if (n.includes("docker")) return Package;
+  if (n.includes("redis")) return HardDrive;
+  if (n.includes("bull") || n.includes("queue")) return ListOrdered;
+  if (n.includes("test") || n.includes("uat")) return ClipboardCheck;
   if (
     n.includes("power") ||
     n.includes("dax") ||
@@ -30,7 +45,8 @@ function iconForSkill(name: string): LucideIcon {
     n.includes("orchestr")
   )
     return Workflow;
-  if (n.includes("sql") || n.includes("supabase")) return Database;
+  if (n.includes("sql") || n.includes("postgres") || n.includes("supabase"))
+    return Database;
   if (
     n.includes("vercel") ||
     n.includes("deploy") ||
@@ -67,30 +83,36 @@ function SkillStripCard({ item }: { item: StripItem }) {
 function MarqueeTrack({
   items,
   direction,
+  durationSec,
 }: {
   items: readonly StripItem[];
   direction: "left" | "right";
+  /** Loop duration; wider strips feel smoother slightly faster. */
+  durationSec?: number;
 }) {
   const doubled = [...items, ...items];
-  const anim =
-    direction === "left" ? "animate-marquee-left" : "animate-marquee-right";
+  const trackClass =
+    direction === "left"
+      ? "marquee-track-scroll-left"
+      : "marquee-track-scroll-right";
 
   return (
     <div
-      className="group/marquee relative overflow-hidden py-2"
-      style={{
-        maskImage:
-          "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-      }}
+      className="marquee-hover-pause relative overflow-hidden py-2"
+      style={
+        {
+          "--marquee-duration": `${durationSec ?? 30}s`,
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+        } as CSSProperties
+      }
     >
       <div
         className={cn(
-          "flex w-max gap-4 pr-4 will-change-transform",
-          anim,
-          "motion-reduce:animate-none",
-          "group-hover/marquee:[animation-play-state:paused]"
+          "flex w-max gap-4 pr-4 [backface-visibility:hidden]",
+          trackClass
         )}
       >
         {doubled.map((item, idx) => (
@@ -132,16 +154,16 @@ export default function Skills() {
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted">
-            Tools and platforms I use across delivery — infinite scroll preview;
-            hover a row to pause.
+            Tools and platforms I use across delivery — infinite scroll; hover a
+            row to pause.
           </p>
         </div>
       </motion.div>
 
-      <motion.div variants={staggerItem} className="space-y-6">
-        <MarqueeTrack items={rowForward} direction="right" />
-        <MarqueeTrack items={rowReverse} direction="left" />
-      </motion.div>
+      <div className="space-y-6">
+        <MarqueeTrack items={rowForward} direction="right" durationSec={28} />
+        <MarqueeTrack items={rowReverse} direction="left" durationSec={32} />
+      </div>
 
       <motion.p
         variants={staggerItem}
