@@ -21,7 +21,7 @@ export const meIntroduction = {
 
   /** One-line expertise signal (shown under name) */
   subtitle:
-    "Systems analyst · full-stack developer · automation · Lagos",
+    "Systems analyst | Full-Stack Developer | Automation Engineer | MSc Information Systems",
 
   /** About Me body copy */
   paragraphs: [
@@ -33,11 +33,15 @@ export const meIntroduction = {
   ],
 } as const;
 
-/** Quick credibility metrics — About / Me section stats row */
+/**
+ * About / Me metrics row.
+ * Third column: “integrations delivered” reads better than “tech mastered” — it signals
+ * shipped API/automation/integration work (aligned with your positioning) rather than a vague stack count.
+ */
 export const meMetrics = [
-  { value: "7+", label: "Years experience" },
-  { value: "20+", label: "Global projects" },
-  { value: "10+", label: "Tech mastered" },
+  { value: "7+", label: "Years of experience" },
+  { value: "20+", label: "Projects completed" },
+  { value: "10+", label: "Integrations delivered" },
 ] as const;
 
 /** Full professional summary (multi-paragraph, publication-ready) */
@@ -259,10 +263,5 @@ export const priorExperience = [
   },
 ] as const;
 
-/** Tags for Me section pills — pointers, not a repeat of Skills */
-export const profileTags = [
-  "Systems delivery end-to-end",
-  "Enterprise & healthcare context",
-  "Automation & integrations",
-  "MSc Information Systems",
-] as const;
+/** Optional Me section pills — empty when not used */
+export const profileTags = [] as const;

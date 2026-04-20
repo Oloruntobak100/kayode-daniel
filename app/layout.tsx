@@ -28,7 +28,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kayode — Full-stack developer, systems analyst & automation engineer",
+  title: "Kayode Daniel — Full-stack developer, systems analyst & automation engineer",
   description:
     "Enterprise and healthcare systems delivery — full-stack engineering, automation, and MSc Information Systems.",
 };

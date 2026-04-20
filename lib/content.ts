@@ -21,10 +21,10 @@ export type SectionId =
   | "contact";
 
 export const profile = {
-  firstName: "Kayode",
+  firstName: "Kayode Daniel",
   headline: professionalTitles,
-  greeting: "Hey, I'm Kayode 👋",
-  name: "Kayode",
+  greeting: "Hey, I'm Kayode Daniel 👋",
+  name: "Kayode Daniel",
   location: "Lagos, Nigeria",
   meEyebrow: meIntroduction.eyebrow,
   meSubtitle: meIntroduction.subtitle,
@@ -35,12 +35,6 @@ export const profile = {
   /** Me / Experience sidebar portrait — `public/profile-me.png`. */
   photoSrc: "/profile-me.png",
   tags: [...profileTags],
-  currentlyBuilding: {
-    title: "Currently pursuing",
-    projectName: "MSc Information Systems",
-    description:
-      "Focus areas: automation, enterprise data systems, and scalable architecture — applied to real delivery contexts (ERP, healthcare MIS, cloud deployments).",
-  },
 } as const;
 
 /** Re-export structured source blocks for rich Me / future sections */
