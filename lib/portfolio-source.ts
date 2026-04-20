@@ -309,6 +309,103 @@ export const fullStackProducts = [
   },
 ] as const;
 
+/** Portfolio grid — filter tabs + dummy entries (replace via admin later) */
+export const projectPortfolioCategories = [
+  { id: "all", label: "All" },
+  {
+    id: "saas-web-app",
+    label: "SaaS & Web and App Development",
+  },
+  { id: "crm-api", label: "CRM & API Integration" },
+  { id: "ai-agent", label: "AI Agent Workflows" },
+  {
+    id: "social-automation",
+    label: "Social Media Automation",
+  },
+  {
+    id: "data-viz",
+    label: "Data Analytics and Visualization",
+  },
+] as const;
+
+export type ProjectPortfolioCategoryId =
+  (typeof projectPortfolioCategories)[number]["id"];
+
+export const portfolioShowcaseProjects = [
+  {
+    id: "show-godea",
+    title: "Godea",
+    categoryId: "saas-web-app" as const,
+    imageSrc: "https://picsum.photos/seed/godea/800/520",
+  },
+  {
+    id: "show-quantiva",
+    title: "Quantiva",
+    categoryId: "data-viz" as const,
+    imageSrc: "https://picsum.photos/seed/quantiva/800/520",
+  },
+  {
+    id: "show-painscope",
+    title: "PainScope",
+    categoryId: "saas-web-app" as const,
+    imageSrc: "https://picsum.photos/seed/painscope/800/520",
+  },
+  {
+    id: "show-paypill",
+    title: "PayPill",
+    categoryId: "crm-api" as const,
+    imageSrc: "https://picsum.photos/seed/paypill/800/520",
+  },
+  {
+    id: "show-leadii",
+    title: "Leadii",
+    categoryId: "crm-api" as const,
+    imageSrc: "https://picsum.photos/seed/leadii/800/520",
+  },
+  {
+    id: "show-accounting",
+    title: "Accounting Automation",
+    categoryId: "saas-web-app" as const,
+    imageSrc: "https://picsum.photos/seed/accounting/800/520",
+  },
+  {
+    id: "show-n8n-flow",
+    title: "Enterprise workflow hub",
+    categoryId: "ai-agent" as const,
+    imageSrc: "https://picsum.photos/seed/n8nflow/800/520",
+  },
+  {
+    id: "show-api-mesh",
+    title: "API integration mesh",
+    categoryId: "crm-api" as const,
+    imageSrc: "https://picsum.photos/seed/apimesh/800/520",
+  },
+  {
+    id: "show-social-suite",
+    title: "Cross-channel publishing",
+    categoryId: "social-automation" as const,
+    imageSrc: "https://picsum.photos/seed/socialsuite/800/520",
+  },
+  {
+    id: "show-insights",
+    title: "Operations insights dashboard",
+    categoryId: "data-viz" as const,
+    imageSrc: "https://picsum.photos/seed/insights/800/520",
+  },
+  {
+    id: "show-agent-rag",
+    title: "RAG support assistant",
+    categoryId: "ai-agent" as const,
+    imageSrc: "https://picsum.photos/seed/ragagent/800/520",
+  },
+  {
+    id: "show-growth",
+    title: "Growth analytics cockpit",
+    categoryId: "data-viz" as const,
+    imageSrc: "https://picsum.photos/seed/growthdash/800/520",
+  },
+];
+
 /** Earlier career — credibility without overstating title */
 export const priorExperience = [
   {

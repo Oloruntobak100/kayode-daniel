@@ -29,8 +29,9 @@ export default function SectionLayout({
   onChatSubmit,
   onBackHome,
 }: Props) {
-  /** Full-width content for dense timeline layouts */
-  const hideAside = activeSection === "experience";
+  /** Full-width content (no portrait column) */
+  const hideAside =
+    activeSection === "experience" || activeSection === "projects";
 
   const renderSection = () => {
     switch (activeSection) {
@@ -66,7 +67,9 @@ export default function SectionLayout({
       <div
         className={cn(
           "mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-36 pt-24 md:gap-14 md:px-12 md:pb-40 md:pt-32",
-          hideAside ? "md:pt-28" : "md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:pt-32"
+          hideAside
+            ? "md:pt-28"
+            : "md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:pt-32"
         )}
       >
         {!hideAside && (
@@ -78,7 +81,9 @@ export default function SectionLayout({
         <div
           className={cn(
             "min-w-0 w-full",
-            hideAside && "mx-auto md:max-w-5xl"
+            hideAside &&
+              activeSection === "experience" &&
+              "mx-auto md:max-w-5xl"
           )}
         >
           <AnimatePresence mode="wait">

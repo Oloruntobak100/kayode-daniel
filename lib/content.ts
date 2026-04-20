@@ -45,10 +45,12 @@ export {
   experienceTimeline,
   healthcareDeployments,
   meMetrics,
+  portfolioShowcaseProjects,
   positioningStatement,
   priorExperience,
   professionalSummary,
   professionalTitles,
+  projectPortfolioCategories,
 } from "./portfolio-source";
 
 export type ProjectItem = {
