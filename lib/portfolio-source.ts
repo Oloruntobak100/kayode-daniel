@@ -41,7 +41,7 @@ export const meIntroduction = {
 export const meMetrics = [
   { value: "7+", label: "Years of experience" },
   { value: "20+", label: "Projects completed" },
-  { value: "10+", label: "Integrations delivered" },
+  { value: "40+", label: "Integrations delivered" },
 ] as const;
 
 /** Full professional summary (multi-paragraph, publication-ready) */
