@@ -14,6 +14,7 @@ import Skills from "@/components/sections/Skills";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { fadeSlideUp } from "@/lib/animations";
 import type { SectionId } from "@/lib/content";
+import { cn } from "@/lib/utils";
 
 type Props = {
   activeSection: SectionId;
@@ -28,6 +29,9 @@ export default function SectionLayout({
   onChatSubmit,
   onBackHome,
 }: Props) {
+  /** Full-width content for dense timeline layouts */
+  const hideAside = activeSection === "experience";
+
   const renderSection = () => {
     switch (activeSection) {
       case "me":
@@ -59,12 +63,24 @@ export default function SectionLayout({
         Home
       </MagneticButton>
 
-      <div className="mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-36 pt-24 md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:gap-14 md:px-12 md:pb-40 md:pt-32">
-        <aside className="w-full min-w-0 md:sticky md:top-36 md:h-fit md:self-start">
-          <SectionVisual section={activeSection} />
-        </aside>
+      <div
+        className={cn(
+          "mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-36 pt-24 md:gap-14 md:px-12 md:pb-40 md:pt-32",
+          hideAside ? "md:pt-28" : "md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:pt-32"
+        )}
+      >
+        {!hideAside && (
+          <aside className="w-full min-w-0 md:sticky md:top-36 md:h-fit md:self-start">
+            <SectionVisual section={activeSection} />
+          </aside>
+        )}
 
-        <div className="min-w-0 w-full">
+        <div
+          className={cn(
+            "min-w-0 w-full",
+            hideAside && "mx-auto md:max-w-5xl"
+          )}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
