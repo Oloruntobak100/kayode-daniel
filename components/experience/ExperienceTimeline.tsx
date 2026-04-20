@@ -225,8 +225,15 @@ export default function ExperienceTimeline({
                 </div>
               </div>
 
-              {/* Desktop alternating */}
-              <div className="relative hidden md:grid md:grid-cols-[minmax(0,1fr)_48px_minmax(0,1fr)] md:gap-x-4">
+              {/* Desktop alternating — 30% date column / 70% content column (swap when date flips side) */}
+              <div
+                className={cn(
+                  "relative hidden md:grid md:gap-x-4",
+                  leftIsDate
+                    ? "md:grid-cols-[minmax(0,3fr)_48px_minmax(0,7fr)]"
+                    : "md:grid-cols-[minmax(0,7fr)_48px_minmax(0,3fr)]"
+                )}
+              >
                 <div
                   className={cn(
                     "flex pt-3 md:items-start",
