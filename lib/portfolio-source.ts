@@ -19,17 +19,17 @@ export const meIntroduction = {
   /** Small label above the name */
   eyebrow: "About",
 
-  /** One-line expertise signal (shown under name; keep in sync with hero titles) */
+  /** One-line expertise signal (shown under name) */
   subtitle:
-    "Full-stack developer · systems analyst · automation engineer · Lagos",
+    "Systems analyst · full-stack developer · automation · Lagos",
 
-  /** 2–3 tight paragraphs — who you are and how you work, not a résumé dump */
+  /** About Me body copy */
   paragraphs: [
-    `I'm Kayode. I turn unclear operational needs into software that sticks: specifications people can agree on, code that ships, integrations and automations that keep teams out of spreadsheets, and enough training and documentation that adoption lasts.`,
+    `I am a Systems Analyst and Full-Stack Developer specializing in information systems development, enterprise system deployment, business process automation, and API integration — helping organizations streamline operations, improve efficiency, and gain a competitive edge.`,
 
-    `My background blends hands-on delivery on national MIS and healthcare EMR/EHR programs with modern product engineering—Next.js, Node, Supabase, Vercel—and workflow automation with tools like n8n.`,
+    `I design and build custom web and mobile applications, enterprise platforms, websites, and high-converting landing pages, translating complex business requirements into scalable, production-ready systems.`,
 
-    `Outside client work I'm completing an MSc in Information Systems, going deeper on data systems, automation, and architecture at scale.`,
+    `I specialize in automating business workflows, API integration, and synchronizing data across multiple systems, enabling organizations to operate more efficiently and make real-time, data-informed decisions. My approach is rooted in strong system analysis, clean architecture, and automation-first thinking, ensuring every solution is both scalable and sustainable.`,
   ],
 } as const;
 
