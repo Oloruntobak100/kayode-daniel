@@ -30,6 +30,20 @@ const config: Config = {
       maxWidth: {
         content: "720px",
       },
+      keyframes: {
+        "marquee-left": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "marquee-right": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        "marquee-left": "marquee-left 42s linear infinite",
+        "marquee-right": "marquee-right 42s linear infinite",
+      },
     },
   },
   plugins: [],

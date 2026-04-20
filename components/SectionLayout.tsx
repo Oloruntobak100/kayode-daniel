@@ -31,7 +31,9 @@ export default function SectionLayout({
 }: Props) {
   /** Full-width content (no portrait column) */
   const hideAside =
-    activeSection === "experience" || activeSection === "projects";
+    activeSection === "experience" ||
+    activeSection === "projects" ||
+    activeSection === "skills";
 
   const renderSection = () => {
     switch (activeSection) {

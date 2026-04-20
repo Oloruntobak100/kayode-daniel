@@ -51,6 +51,7 @@ export {
   professionalSummary,
   professionalTitles,
   projectPortfolioCategories,
+  skillsMarqueeItems,
 } from "./portfolio-source";
 
 export type ProjectItem = {

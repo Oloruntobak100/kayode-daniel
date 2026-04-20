@@ -120,6 +120,29 @@ export const techStack = [
   },
 ] as const;
 
+/**
+ * Infinite marquee strips — short labels + grouping line for Skills UI.
+ * Sourced from `techStack`; order is intentional for two balanced rows.
+ */
+export const skillsMarqueeItems = [
+  { id: "m-next", name: "Next.js", group: "Full-stack" },
+  { id: "m-ts", name: "TypeScript", group: "Language" },
+  { id: "m-node", name: "Node.js", group: "Runtime" },
+  { id: "m-rest", name: "REST APIs", group: "Integration" },
+  { id: "m-auth", name: "Auth patterns", group: "Security" },
+  { id: "m-supa", name: "Supabase", group: "Backend" },
+  { id: "m-sql", name: "SQL / MySQL", group: "Data" },
+  { id: "m-vercel", name: "Vercel", group: "Deploy" },
+  { id: "m-cloud", name: "Cloud architecture", group: "Infra" },
+  { id: "m-n8n", name: "n8n", group: "Automation" },
+  { id: "m-api", name: "API orchestration", group: "Integration" },
+  { id: "m-hook", name: "Webhooks", group: "Events" },
+  { id: "m-pbi", name: "Power BI", group: "Analytics" },
+  { id: "m-dax", name: "DAX / Power Pivot", group: "Analytics" },
+  { id: "m-model", name: "Star schema", group: "Modeling" },
+  { id: "m-viz", name: "Data visualization", group: "Reporting" },
+] as const;
+
 /** Experience section — one-line framing (detail is in the blocks below) */
 export const experienceOverview =
   "Programs and deployments where I've supported delivery end-to-end—from requirements and documentation through configuration, testing, training, and stabilization—not as a passive handoff.";
