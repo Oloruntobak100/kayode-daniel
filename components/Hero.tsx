@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils";
 const AVATAR_W = 112;
 const AVATAR_H = 140;
 
-/** Split “A | B | C” into stacked lines with reference-style color rhythm */
+/** Split role titles (e.g. "A | B | C" or "A · B · C") into stacked lines with color rhythm */
 function HeadlineStack({ text }: { text: string }) {
   const lines = text
-    .split("|")
+    .split(/\s*[|·•]\s*/u)
     .map((s) => s.trim())
     .filter(Boolean);
 
@@ -63,7 +63,7 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
 
       <motion.h1
         variants={staggerItem}
-        className="font-hero mx-auto w-full max-w-[min(100%,22rem)] px-2 text-center text-[clamp(1.55rem,5.2vw,2.85rem)] font-extrabold leading-[0.95] sm:max-w-2xl md:max-w-3xl"
+        className="font-hero mx-auto w-full max-w-[min(100%,24rem)] px-2 text-center text-[clamp(1.6rem,5.4vw,2.9rem)] font-extrabold leading-[0.95] sm:max-w-2xl md:max-w-3xl"
       >
         <HeadlineStack text={profile.headline} />
       </motion.h1>

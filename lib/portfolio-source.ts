@@ -10,7 +10,7 @@ export const professionalTitles =
 
 /** Elevator positioning — what you do in one breath */
 export const elevatorPitch =
-  "I help teams turn messy business problems into software that people can actually use day to day.";
+  "I consult on and deliver information systems: how your business and processes really work, how they should be supported, and the applications and integrations that help organizations run more efficiently.";
 
 /**
  * Me section only — short, human intro. Detail lives in Experience, Skills, Projects.
@@ -21,15 +21,15 @@ export const meIntroduction = {
 
   /** One-line expertise signal (shown under name) */
   subtitle:
-    "Systems analyst | Full-Stack Developer | Automation Engineer | MSc Information Systems",
+    "Information systems — consulting, analysis & design | Full-Stack & automation | MSc Information Systems",
 
   /** About Me body copy */
   paragraphs: [
-    `I work as a systems analyst and full-stack developer: I dig into how an organization really works, then design and deliver software that fits—whether that is a new app, a deployment on site, or wiring systems together with APIs and automation.`,
+    `I work as a consultant in information systems analysis and design, and I implement what we agree. That means first clarifying how the business works: structures, business processes, how they interact, and where information, decisions, and handoffs are weak or unclear. I then show how an information system should support the organization—so leaders and staff see one coherent picture, not isolated tools—and I deliver that in practice, whether that is a new application, a deliberate upgrade to software you already run, or connecting CRMs, ERPs, and other line-of-business systems through APIs and integration so data is captured once and reused without manual re-entry.`,
 
-    `I build web and mobile apps, platforms, and marketing sites, and I care that what ships matches what the business actually asked for—not a guess from six months ago.`,
+    `Well-designed and well-used information systems are how modern businesses and corporations get more from the same people: lower operating cost, higher productivity, and better margins. I automate the repetitive, redundant work so the same information systems free people to focus on activities that add real value rather than re-keying, reconciling, and chasing the latest Excel version.`,
 
-    `A lot of my work is about saving people time: connecting tools, automating the boring parts, and making data easier to act on. I like clean architecture, but the goal is always something the team can run and grow without it turning into a maintenance nightmare.`,
+    `I blend Agile practices with Waterfall-style structure where it helps: clear requirements, staged delivery, and traceability from decision to build—so architecture stays clean, the solution remains aligned to how the business runs, and it can evolve as operations and information needs change.`,
   ],
 } as const;
 
@@ -46,14 +46,14 @@ export const meMetrics = [
 
 /** Full professional summary (multi-paragraph, publication-ready) */
 export const professionalSummary = {
-  lead: `I have been doing this for 7+ years: full-stack work, business analysis, and automation—on ERP, hospital systems, data platforms, and the glue between them.`,
+  lead: `With 7+ years in information systems, I combine consulting on how businesses work and how they should be supported, with full-stack and automation delivery—across ERP, health information systems, data platforms, and enterprise integration.`,
 
-  stackContext: `These days I lean on Next.js, Node.js, Supabase, and Vercel, plus n8n when a process needs to run itself instead of live in a spreadsheet.`,
+  stackContext: `My current stack leans on Next.js, Node.js, Supabase, and Vercel, with n8n and custom APIs where processes need to run as reliable, auditable automations instead of ad hoc spreadsheets.`,
 
-  education: `I am studying for a Master’s in Information Systems, focused on automation, data, and how systems scale without getting brittle.`,
+  education: `I am completing a Master’s in Information Systems, with emphasis on automation, enterprise data, and architecture that remains supportable as the business changes.`,
 
   /** Sharpened analyst / delivery narrative (merged from your longer paragraph) */
-  analystDelivery: `For the last 4+ years, analysis and delivery have been a big part of the job. I sit with people, write down what they need in plain terms, and turn that into specs, flowcharts, and testable designs. I plan tests, run functional and UAT, and work issues through until the software does what it promised in real use—not just on demo day.`,
+  analystDelivery: `In IS analysis, design, and delivery roles, I work with leadership and operations: eliciting and documenting needs in business language, mapping processes, and turning agreements into data definitions, designs, and testable builds. I own functional and UAT cycles, drive defects to closure, and make sure what goes live matches the organization’s definition of the system—not a model that no longer matches production use.`,
 } as const;
 
 /**
@@ -61,19 +61,23 @@ export const professionalSummary = {
  * you own analysis → build → automation → deployment → adoption.
  */
 export const positioningStatement = {
-  headline: "Systems builder — analysis to production",
+  headline: "IS consulting and design — to systems that run the business well",
 
   /** Short manifesto for hero or About lead */
-  manifesto: `Some roles stop at a document; others only write code. I like owning the line from “what do we need?” to “it’s in production and people are using it”—architecture, build, automation, deploy, and helping the team get comfortable. That’s the mix I bring.`,
+  manifesto: `I move from how the business and its processes actually work, to what the information system must do, then to build, integration, and go-live—so the organization is run through systems that match reality, not a slide deck from last year.`,
 
-  notJust: ["“Full-stack developer” alone", '"Systems analyst" alone'],
+  notJust: [
+    "“Full-stack developer” alone",
+    '"Systems analyst" alone',
+    "“Consulting” without delivery",
+  ],
 
   youAre: [
-    "Figure out the system: analysis, questions, and clear requirements",
-    "Build the system: full-stack, not just a slide",
-    "Wire it to other tools: n8n, APIs, webhooks, the boring made automatic",
-    "Put it in production: Vercel, Supabase, patterns that do not fall over under load",
-    "Help people adopt it: docs, training, so it survives the first month",
+    "Consult and model: how work, data, and decisions should flow in the business before design is fixed",
+    "Shape the information system: requirements, data, and interfaces that match the organization’s operating model",
+    "Build and integrate: full-stack delivery and APIs across CRM, ERP, and other core systems",
+    "Run disciplined releases: quality gates, documentation, and a clean handover to operations",
+    "Sustain adoption: training, stabilization, and follow-on change as the business and its use of information evolve",
   ],
 } as const;
 

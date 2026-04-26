@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import ClientFluidBackground from "@/components/ClientFluidBackground";
 import CustomCursor from "@/components/CustomCursor";
 import Hero from "@/components/Hero";
 import SectionLayout from "@/components/SectionLayout";
@@ -17,7 +16,6 @@ export default function Home() {
 
   return (
     <div className="relative isolate min-h-screen bg-background">
-      <ClientFluidBackground />
       <CustomCursor />
 
       <AnimatePresence mode="wait">
