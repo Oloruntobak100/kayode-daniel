@@ -21,19 +21,17 @@ export const meIntroduction = {
 
   /** One-line expertise signal (shown under name) */
   subtitle:
-    "Information systems — consulting, analysis & design | Full-Stack & automation | MSc Information Systems",
+    "Information systems — consulting, analysis and design | Full-stack and automation",
 
   /** About Me body copy */
   paragraphs: [
-    `I help startups and businesses transform ideas into reality by moving from information systems—how work, data, and decisions should be structured—into products that teams can rely on every day: clear, usable, and built to scale with the business. With 7+ years of experience across SaaS, mobile apps, dashboards, and workflow-heavy systems, I deliver high-quality software solutions.`,
+    `I help startups and businesses turn ideas into reality through well-designed information systems—building software products that are structured, scalable, and aligned with how the business actually operates. With over 7 years of experience across SaaS platforms, mobile apps, dashboards, and workflow-driven systems, I deliver high-quality solutions that are built to last.`,
 
-    `Most software projects do not fail for lack of technology; they fail from poor planning and weak execution—not because the original idea was weak. I work with startups, founders, and businesses to avoid that: I combine business process management and continuous improvement with technology, so we design software that is functional, cost-effective, and high quality.`,
+    `When you work with me, you're not just hiring a developer—you're working with a technical partner who takes ownership of the product end-to-end, from architecture and design to development and deployment.`,
 
-    `When you work with me, you are not just hiring a developer. You are partnering with a technical owner who takes full ownership of the product, end to end—from system architecture and UI/UX through development and deployment—so the whole system works as a single, coherent product.`,
+    `I take the time to understand your vision, your users, and how your business runs, so the final product is not just built, but built right.`,
 
-    `I take the time to understand your vision, your users, and how the business really runs. Whether you need an MVP, a multi-tenant SaaS product, an OAuth-based application, a custom platform, or a scalable enterprise solution, I have the experience and rigor to deliver solutions that are efficient, durable, and fit for the long run.`,
-
-    `If you want a dependable partner who values clarity, structure, and real results, we should talk.`,
+    `If you value structure, quality, and long-term results, we should talk.`,
   ],
 } as const;
 
