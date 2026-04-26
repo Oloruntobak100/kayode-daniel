@@ -20,9 +20,11 @@ export default function Me() {
         <p className="mt-2 font-display text-4xl font-semibold tracking-tight">
           {profile.name}
         </p>
-        <p className="mt-3 max-w-2xl text-sm leading-snug text-muted sm:text-base">
-          {profile.meSubtitle}
-        </p>
+        {profile.meSubtitle ? (
+          <p className="mt-3 max-w-2xl text-sm leading-snug text-muted sm:text-base">
+            {profile.meSubtitle}
+          </p>
+        ) : null}
       </motion.div>
 
       <motion.div variants={staggerItem} className="space-y-4 text-lg leading-relaxed text-foreground/95">
