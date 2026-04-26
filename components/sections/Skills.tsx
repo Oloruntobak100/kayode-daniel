@@ -1,7 +1,11 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useEffect, useRef } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
@@ -17,7 +21,7 @@ import {
   Workflow,
   Wind,
 } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { skillsMarqueeItems as strip } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -28,6 +32,25 @@ type StripItem = (typeof strip)[number];
 const MARQUEE_MID = Math.ceil(strip.length / 2);
 const SKILL_ROW_TOP = strip.slice(0, MARQUEE_MID);
 const SKILL_ROW_BOTTOM = strip.slice(MARQUEE_MID);
+
+function subscribeReducedMotion(cb: () => void): () => void {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+function getReducedMotionSnapshot(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** SSR / hydration: assume motion ok until client reads real preference. */
+function usePrefersReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    () => false
+  );
+}
 
 function iconForSkill(name: string): LucideIcon {
   const n = name.toLowerCase();
@@ -87,9 +110,8 @@ function SkillStripCard({ item }: { item: StripItem }) {
 }
 
 /**
- * Pixel-based infinite marquee via requestAnimationFrame.
- * Parent Framer Motion wrappers use `transform`, which breaks nested CSS keyframe
- * animations in some browsers — driving translate3d from JS avoids that entirely.
+ * Pixel infinite marquee via requestAnimationFrame.
+ * Avoid any ancestor Framer `transform` on the Skills route (SectionLayout uses `sectionMarqueeSafe`).
  */
 function MarqueeTrack({
   items,
@@ -100,8 +122,7 @@ function MarqueeTrack({
   direction: "left" | "right";
   durationSec?: number;
 }) {
-  /** `null` during SSR — treat as “motion ok” until mounted. */
-  const prefersReducedMotion = useReducedMotion() === true;
+  const prefersReducedMotion = usePrefersReducedMotion();
   const innerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const pausedRef = useRef(false);
@@ -111,7 +132,7 @@ function MarqueeTrack({
   const loopItems = prefersReducedMotion ? [...items] : [...items, ...items];
   const seconds = durationSec ?? 30;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (prefersReducedMotion) return;
 
     const el = innerRef.current;
@@ -127,7 +148,7 @@ function MarqueeTrack({
       const dt = Math.min((now - last) / 1000, 0.08);
       last = now;
 
-      if (seg > 2) {
+      if (seg > 4) {
         const speed = seg / seconds;
 
         if (direction === "right") {
@@ -156,22 +177,28 @@ function MarqueeTrack({
 
     rafRef.current = requestAnimationFrame(tick);
 
+    let resizeDebounce: ReturnType<typeof setTimeout> | undefined;
     const ro = new ResizeObserver(() => {
-      if (direction === "left") {
-        offsetRef.current = 0;
-      } else {
-        rightSeedRef.current = false;
-        offsetRef.current = 0;
-      }
+      clearTimeout(resizeDebounce);
+      resizeDebounce = setTimeout(() => {
+        if (direction === "left") {
+          offsetRef.current = 0;
+        } else {
+          rightSeedRef.current = false;
+          offsetRef.current = 0;
+        }
+      }, 140);
     });
     ro.observe(el);
 
     return () => {
       cancelled = true;
+      clearTimeout(resizeDebounce);
       cancelAnimationFrame(rafRef.current);
       ro.disconnect();
       rightSeedRef.current = false;
       offsetRef.current = 0;
+      el.style.transform = "";
     };
   }, [direction, seconds, prefersReducedMotion]);
 
@@ -184,7 +211,7 @@ function MarqueeTrack({
 
   return (
     <div
-      className="relative overflow-hidden py-2"
+      className="relative isolate overflow-hidden py-2"
       style={maskStyle as CSSProperties}
       onMouseEnter={() => {
         pausedRef.current = true;

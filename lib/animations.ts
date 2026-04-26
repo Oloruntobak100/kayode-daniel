@@ -18,6 +18,25 @@ export const fadeSlideUp: Variants = {
   },
 };
 
+/**
+ * Section enter/exit without translateY — used for Skills so nested marquee
+ * translateX layers are not flattened by an ancestor transform (fixes “static” strips in Chromium/WebKit).
+ */
+export const sectionMarqueeSafe: Variants = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.35, ease: [0.4, 0, 1, 1] },
+  },
+};
+
 export const springPanel: Variants = {
   hidden: { opacity: 0, y: "85%" },
   visible: {

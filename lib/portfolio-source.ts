@@ -6,11 +6,11 @@
 
 /** One-line titles you can use in hero / LinkedIn-style headers */
 export const professionalTitles =
-  "Full-Stack Developer | Systems Analyst | Automation Engineer";
+  "Full-Stack Developer · Systems Analyst · Automation Engineer";
 
 /** Elevator positioning — what you do in one breath */
 export const elevatorPitch =
-  "I design, build, and deploy enterprise-grade systems that solve real operational problems.";
+  "I help teams turn messy business problems into software that people can actually use day to day.";
 
 /**
  * Me section only — short, human intro. Detail lives in Experience, Skills, Projects.
@@ -25,11 +25,11 @@ export const meIntroduction = {
 
   /** About Me body copy */
   paragraphs: [
-    `I am a Systems Analyst and Full-Stack Developer specializing in information systems development, enterprise system deployment, business process automation, and API integration — helping organizations streamline operations, improve efficiency, and gain a competitive edge.`,
+    `I work as a systems analyst and full-stack developer: I dig into how an organization really works, then design and deliver software that fits—whether that is a new app, a deployment on site, or wiring systems together with APIs and automation.`,
 
-    `I design and build custom web and mobile applications, enterprise platforms, websites, and high-converting landing pages, translating complex business requirements into scalable, production-ready systems.`,
+    `I build web and mobile apps, platforms, and marketing sites, and I care that what ships matches what the business actually asked for—not a guess from six months ago.`,
 
-    `I specialize in automating business workflows, API integration, and synchronizing data across multiple systems, enabling organizations to operate more efficiently and make real-time, data-informed decisions. My approach is rooted in strong system analysis, clean architecture, and automation-first thinking, ensuring every solution is both scalable and sustainable.`,
+    `A lot of my work is about saving people time: connecting tools, automating the boring parts, and making data easier to act on. I like clean architecture, but the goal is always something the team can run and grow without it turning into a maintenance nightmare.`,
   ],
 } as const;
 
@@ -46,14 +46,14 @@ export const meMetrics = [
 
 /** Full professional summary (multi-paragraph, publication-ready) */
 export const professionalSummary = {
-  lead: `With 7+ years of experience, I combine full-stack engineering, business analysis, and workflow automation to deliver scalable solutions across ERP, EMR/EHR, and data-driven platforms.`,
+  lead: `I have been doing this for 7+ years: full-stack work, business analysis, and automation—on ERP, hospital systems, data platforms, and the glue between them.`,
 
-  stackContext: `I work extensively with Next.js, Node.js, Supabase, and Vercel, alongside automation tooling such as n8n to build integrated, end-to-end systems.`,
+  stackContext: `These days I lean on Next.js, Node.js, Supabase, and Vercel, plus n8n when a process needs to run itself instead of live in a spreadsheet.`,
 
-  education: `I am pursuing a Master’s in Information Systems, with emphasis on automation, data systems, and scalable architecture.`,
+  education: `I am studying for a Master’s in Information Systems, focused on automation, data, and how systems scale without getting brittle.`,
 
   /** Sharpened analyst / delivery narrative (merged from your longer paragraph) */
-  analystDelivery: `Results-oriented systems analyst with 4+ years dedicated to analyzing, designing, and implementing reliable IT solutions. I gather and document requirements, run structured analysis, and translate business needs into specifications, workflows, and testable designs. I author system specifications and diagrams that align delivery teams, build comprehensive test plans, execute functional and UAT cycles, and drive defects to closure so complex software performs as intended in production.`,
+  analystDelivery: `For the last 4+ years, analysis and delivery have been a big part of the job. I sit with people, write down what they need in plain terms, and turn that into specs, flowcharts, and testable designs. I plan tests, run functional and UAT, and work issues through until the software does what it promised in real use—not just on demo day.`,
 } as const;
 
 /**
@@ -64,16 +64,16 @@ export const positioningStatement = {
   headline: "Systems builder — analysis to production",
 
   /** Short manifesto for hero or About lead */
-  manifesto: `You need someone who can architect the system, build it, automate it with APIs and workflows, deploy and scale it on modern cloud stacks, then train users and sustain adoption. That combination is uncommon — it’s how I work.`,
+  manifesto: `Some roles stop at a document; others only write code. I like owning the line from “what do we need?” to “it’s in production and people are using it”—architecture, build, automation, deploy, and helping the team get comfortable. That’s the mix I bring.`,
 
   notJust: ["“Full-stack developer” alone", '"Systems analyst" alone'],
 
   youAre: [
-    "Architect and clarify the system (analysis & requirements)",
-    "Implement the system (full-stack development)",
-    "Automate and integrate it (n8n, APIs, webhooks, orchestration)",
-    "Deploy and scale it (Vercel, Supabase, cloud-ready patterns)",
-    "Train users and transfer knowledge (documentation, training, adoption)",
+    "Figure out the system: analysis, questions, and clear requirements",
+    "Build the system: full-stack, not just a slide",
+    "Wire it to other tools: n8n, APIs, webhooks, the boring made automatic",
+    "Put it in production: Vercel, Supabase, patterns that do not fall over under load",
+    "Help people adopt it: docs, training, so it survives the first month",
   ],
 } as const;
 
@@ -153,13 +153,13 @@ export const skillsMarqueeItems = [
 
 /** Experience section — one-line framing (detail is in the blocks below) */
 export const experienceOverview =
-  "Programs and deployments where I've supported delivery end-to-end—from requirements and documentation through configuration, testing, training, and stabilization—not as a passive handoff.";
+  "A sample of the programs I have supported all the way through: figuring out requirements, writing it down, configuring, testing, training, and helping things settle after go-live—without disappearing after a PDF handover.";
 
 /** Government & large-program credibility */
 export const enterpriseSystems = {
   sectionTitle: "Government & enterprise programs",
   intro:
-    "Hands-on participation across national and federal digital programs — documentation, SDLC alignment, and delivery support.",
+    "Most of my work sat between the agencies and clients who needed the software and the team that built it. I listened, wrote down what we agreed, kept everyone pointed at the same picture of “done,” and stuck around for testing and launch so the important details did not get lost in translation.",
 
   programs: [
     {
@@ -179,8 +179,16 @@ export const enterpriseSystems = {
       shortName: "NFWP MIS / PMIS",
     },
     {
-      name: "Central Bank of Nigeria — Enterprise Content Management",
-      shortName: "CBN ECM",
+      name: "Financial Institution Application Processing System (FIAPS) — Central Bank of Nigeria",
+      shortName: "CBN FIAPS",
+    },
+    {
+      name: "CBN Paperlite Application — Central Bank of Nigeria",
+      shortName: "CBN Paperlite",
+    },
+    {
+      name: "National Identity Management Commission — Management Information System",
+      shortName: "NIMC MIS",
     },
     {
       name: "Catholic Archdiocese of Lagos — Integration Management Information System",
@@ -193,9 +201,11 @@ export const enterpriseSystems = {
   ],
 
   roleSummary: [
-    "Co-managed aspects of the system development lifecycle with delivery teams",
-    "Produced core documentation across SDLC phases (requirements through rollout)",
-    "Supported system design, structure, configuration, and delivery milestones",
+    "I was the person clients and our developers both came to—workshops, calls, and follow-ups—so the build matched what the business said they needed, not what someone thought they said three months ago",
+    "I met with leaders and their teams, mapped how the work really ran, and put it in writing so the devs knew exactly what to build and how to test it",
+    "I kept the project paperwork honest end to end: what we asked for, how we designed it, what we released, how to use it, and what we handed over at the end",
+    "I did not hand off a build I had not poked: functional checks and UAT with users so we caught issues before the client’s big day",
+    "After launch, I stayed reachable—fixes, small config changes, and helping people get comfortable with the new system",
   ],
 } as const;
 
@@ -203,7 +213,7 @@ export const enterpriseSystems = {
 export const healthcareDeployments = {
   sectionTitle: "Healthcare — EMR / EHR deployments",
   intro:
-    "Led customization, configuration, and deployment of electronic health record systems for hospital operations — positioned as delivery ownership, not passive support.",
+    "I rolled out and tailored hospital EHR/EMR systems: not a ticket on a wall, but end-to-end—talking to doctors and admin, getting settings right, training people, and staying in the loop after go-live.",
 
   hospitals: [
     "St. Nicholas Hospital — Lagos",
@@ -215,19 +225,19 @@ export const healthcareDeployments = {
   ],
 
   deliveryHighlights: [
-    "Executive-level product presentations to hospital leadership",
-    "Requirements engineering workshops across clinical and admin departments",
-    "Translation of hospital workflows into system configuration and master data",
-    "System testing — UAT coordination and functional validation",
-    "End-user training programs and super-user enablement",
-    "Documentation suites: user manuals, tutorial videos, knowledge transfer packs",
-    "Post-go-live remote support, tuning, and optimization",
+    "Walked leadership through what the product could (and could not) do, in language that matched how they make decisions",
+    "Ran working sessions in wards and back office so we did not miss how care and paperwork actually run day to day",
+    "Turned those conversations into how the system was set up: forms, fields, and master data that matched the hospital’s reality",
+    "Coordinated UAT and day-to-day testing with staff so we fixed problems before they hit patients and billing",
+    "Trained end users and a few “super users” so the floor had someone to ask besides calling me for every small thing",
+    "Left real manuals, short videos, and handover notes people could return to when memory fades",
+    "Stuck with sites after go-live: remote help, small tweaks, and nudging performance when something felt clunky",
   ],
 
   impact: [
-    "Digitized core hospital operations",
-    "Improved accessibility and consistency of patient data",
-    "Reduced manual errors and operational friction",
+    "Less paper and fewer side spreadsheets for the work that has to be auditable",
+    "Patient and clinical information easier to find in one place when the team needs it",
+    "Fewer avoidable errors and less duplicate data entry in daily routines",
   ],
 } as const;
 
@@ -241,7 +251,7 @@ export const experienceTimeline = [
     organization: "Maybeach Technologies",
     location: "Abuja, Nigeria",
     periodLabel: "Sep 2019 – Jan 2021",
-    role: "Project Manager",
+    role: "Project Manager & Systems Analyst",
     eyebrow: enterpriseSystems.sectionTitle,
     intro: enterpriseSystems.intro,
     programs: enterpriseSystems.programs.map(
@@ -273,20 +283,20 @@ export const experienceTimeline = [
     role: "Lead System Architect & Lead Developer",
     eyebrow: "Full-stack product delivery",
     intro:
-      "I lead system architecture and full-stack development for Northsnow's web and mobile applications — translating product goals into scalable, production-ready systems across our suite of platforms.",
+      "I lead how we shape and build Northsnow’s web and mobile apps: turning a product idea into something we can run in production, then improve without breaking what users already trust.",
     productHighlight:
-      "Products include Godea, Quantiva, PainScope, PayPill, Leadii, and Accounting Automation — spanning analytics and operations, healthcare scenarios, payments, lead management, and finance automation.",
+      "The suite includes Godea, Quantiva, PainScope, PayPill, Leadii, and Accounting Automation—covering analytics, day-to-day ops, healthcare, payments, leads, and finance workflows.",
     stackTitle: "Core tools & deployment",
     stackBullets: [
       "Next.js, React, TypeScript",
       "Node.js, REST & event-driven APIs",
       "BullMQ, Redis (queues & caching)",
-      "GitHub — collaboration, reviews, CI/CD hooks",
+      "GitHub — reviews, collaboration, and CI",
       "PostgreSQL, Docker, cloud-native deployments",
     ],
     deliveryBullets: [
-      "End-to-end ownership from architecture through deployment and iteration",
-      "Reliability, performance, and security treated as first-class concerns",
+      "I own the line from “what are we building?” to shipping and the next release—not just the first cut",
+      "I treat speed, stability, and security as things you plan for, not things you fix after a bad week",
     ],
   },
 ] as const;
@@ -297,7 +307,7 @@ export const fullStackProducts = [
     id: "godea",
     name: "Godea",
     description:
-      "Full-stack web platform engineered for scale — modern UI, robust backend, deployed on Vercel with performance and reliability as first-class concerns.",
+      "A full stack web app built to grow: solid UI, backend that can take traffic, on Vercel, with the slow paths and error cases thought through—not an afterthought.",
     tech: ["Next.js", "Node.js", "Vercel"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
@@ -306,7 +316,7 @@ export const fullStackProducts = [
     id: "quantiva",
     name: "Quantiva",
     description:
-      "Data-centric platform combining structured backends with analytics-oriented workflows for decision support.",
+      "Pulls data into one place and supports workflows around it so people can make calls from evidence, not from a gut feeling in a static report.",
     tech: ["Next.js", "APIs", "Analytics"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
@@ -315,7 +325,7 @@ export const fullStackProducts = [
     id: "painscope",
     name: "PainScope",
     description:
-      "Cloud application focused on healthcare monitoring scenarios with real-time and longitudinal data handling.",
+      "Healthcare-facing product: data that updates in real time when it matters, and a history you can look back on when a case runs long.",
     tech: ["Cloud", "Realtime", "Healthcare UX"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
@@ -324,7 +334,7 @@ export const fullStackProducts = [
     id: "paypill",
     name: "PayPill",
     description:
-      "Payment-capable product integrating secure APIs, transactional flows, and operational dashboards.",
+      "Takes money in safely, talks to payment providers cleanly, and gives operations a place to see what is moving—without the finance team living in a vendor portal.",
     tech: ["Payments", "APIs", "Security"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
@@ -333,7 +343,7 @@ export const fullStackProducts = [
     id: "leadii",
     name: "Leadii",
     description:
-      "Lead management / CRM-style platform with automation hooks and workflow triggers for sales and follow-up.",
+      "Pipeline and follow-up in one system: when a lead comes in, who owns it, what happens next, and a few automations so nothing obvious slips.",
     tech: ["CRM patterns", "Automation", "Workflows"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
@@ -444,9 +454,9 @@ export const priorExperience = [
     role: "IT Support Consultant & Front-End Developer",
     period: "Feb 2020 – Dec 2020",
     highlights: [
-      "Implemented UI/UX mock-ups and wireframes in HTML, CSS, and JavaScript",
-      "Testing and debugging for layout, functionality, and performance",
-      "Technical troubleshooting across hardware, software, and basic networking",
+      "Turned wireframes and mockups into real pages in HTML, CSS, and JavaScript",
+      "Found and fixed what broke: layout, interactions, and slow or flaky behaviour",
+      "Fielded day-to-day IT issues on hardware, software, and the basics of the network",
     ],
   },
 ] as const;

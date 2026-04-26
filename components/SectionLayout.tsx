@@ -12,7 +12,7 @@ import Me from "@/components/sections/Me";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
 import MagneticButton from "@/components/ui/MagneticButton";
-import { fadeSlideUp } from "@/lib/animations";
+import { fadeSlideUp, sectionMarqueeSafe } from "@/lib/animations";
 import type { SectionId } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +91,9 @@ export default function SectionLayout({
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
-              variants={fadeSlideUp}
+              variants={
+                activeSection === "skills" ? sectionMarqueeSafe : fadeSlideUp
+              }
               initial="hidden"
               animate="visible"
               exit="exit"
