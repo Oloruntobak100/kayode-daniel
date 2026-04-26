@@ -10,7 +10,7 @@ export const professionalTitles =
 
 /** Elevator positioning — what you do in one breath */
 export const elevatorPitch =
-  "I consult on and deliver information systems: how your business and processes really work, how they should be supported, and the applications and integrations that help organizations run more efficiently.";
+  "I help startups and businesses turn ideas into reality—from information systems and product design through to shipped software—with 7+ years across SaaS, mobile, dashboards, and workflow-heavy systems.";
 
 /**
  * Me section only — short, human intro. Detail lives in Experience, Skills, Projects.
@@ -25,11 +25,15 @@ export const meIntroduction = {
 
   /** About Me body copy */
   paragraphs: [
-    `I work as a consultant in information systems analysis and design, and I implement what we agree. That means first clarifying how the business works: structures, business processes, how they interact, and where information, decisions, and handoffs are weak or unclear. I then show how an information system should support the organization—so leaders and staff see one coherent picture, not isolated tools—and I deliver that in practice, whether that is a new application, a deliberate upgrade to software you already run, or connecting CRMs, ERPs, and other line-of-business systems through APIs and integration so data is captured once and reused without manual re-entry.`,
+    `I help startups and businesses transform ideas into reality by moving from information systems—how work, data, and decisions should be structured—into products that teams can rely on every day: clear, usable, and built to scale with the business. With 7+ years of experience across SaaS, mobile apps, dashboards, and workflow-heavy systems, I deliver high-quality software solutions.`,
 
-    `Well-designed and well-used information systems are how modern businesses and corporations get more from the same people: lower operating cost, higher productivity, and better margins. I automate the repetitive, redundant work so the same information systems free people to focus on activities that add real value rather than re-keying, reconciling, and chasing the latest Excel version.`,
+    `Most software projects do not fail for lack of technology; they fail from poor planning and weak execution—not because the original idea was weak. I work with startups, founders, and businesses to avoid that: I combine business process management and continuous improvement with technology, so we design software that is functional, cost-effective, and high quality.`,
 
-    `I blend Agile practices with Waterfall-style structure where it helps: clear requirements, staged delivery, and traceability from decision to build—so architecture stays clean, the solution remains aligned to how the business runs, and it can evolve as operations and information needs change.`,
+    `When you work with me, you are not just hiring a developer. You are partnering with a technical owner who takes full ownership of the product, end to end—from system architecture and UI/UX through development and deployment—so the whole system works as a single, coherent product.`,
+
+    `I take the time to understand your vision, your users, and how the business really runs. Whether you need an MVP, a multi-tenant SaaS product, an OAuth-based application, a custom platform, or a scalable enterprise solution, I have the experience and rigor to deliver solutions that are efficient, durable, and fit for the long run.`,
+
+    `If you want a dependable partner who values clarity, structure, and real results, we should talk.`,
   ],
 } as const;
 
