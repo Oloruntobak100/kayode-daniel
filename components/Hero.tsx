@@ -16,7 +16,7 @@ const AVATAR_H = 140;
 /** Split role titles (e.g. "A | B | C" or "A · B · C") into stacked lines with color rhythm */
 function HeadlineStack({ text }: { text: string }) {
   const lines = text
-    .split(/\s*[|·•]\s*/u)
+    .split(/\s*[|·•]\s*/)
     .map((s) => s.trim())
     .filter(Boolean);
 
