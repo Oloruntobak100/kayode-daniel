@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Code2,
   Landmark,
+  Layers2,
   Stethoscope,
   Workflow,
 } from "lucide-react";
@@ -32,27 +33,35 @@ function ChevronBulletList({ items }: { items: readonly string[] }) {
   );
 }
 
-/** Border-l rows: optional `Title — subtitle` split; category-only lines stay bold-only */
+/** Notable project rows — uniform icon badge + optional `Title — subtitle` split */
 function ProgramLines({ lines }: { lines: readonly string[] }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3.5">
       {lines.map((line) => {
         const parts = line.split(" — ");
         const rest = parts.slice(1).join(" — ").trim();
         const hasSecondary = parts.length > 1 && rest.length > 0;
         return (
-          <p
-            key={line}
-            className="border-l border-black/10 pl-3 text-sm leading-snug text-foreground/90"
-          >
-            <span className="font-semibold text-foreground">{parts[0]}</span>
-            {hasSecondary ? (
-              <>
-                <span className="text-muted"> — </span>
-                <span>{rest}</span>
-              </>
-            ) : null}
-          </p>
+          <div key={line} className="flex gap-3">
+            <span
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-black/[0.09] bg-gradient-to-b from-white to-neutral-50 shadow-soft ring-1 ring-black/[0.03]"
+              aria-hidden
+            >
+              <Layers2
+                className="h-[18px] w-[18px] text-[color:var(--accent)]"
+                strokeWidth={1.65}
+              />
+            </span>
+            <p className="min-w-0 flex-1 border-l border-black/10 pl-3 pt-1 text-sm leading-snug text-foreground/90 md:pt-0.5">
+              <span className="font-semibold text-foreground">{parts[0]}</span>
+              {hasSecondary ? (
+                <>
+                  <span className="text-muted"> — </span>
+                  <span>{rest}</span>
+                </>
+              ) : null}
+            </p>
+          </div>
         );
       })}
     </div>

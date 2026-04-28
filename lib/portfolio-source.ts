@@ -158,7 +158,7 @@ export const skillsMarqueeItems = [
 
 /** Experience section — one-line framing (detail is in the blocks below) */
 export const experienceOverview =
-  "A sample of the programs I have supported all the way through: figuring out requirements, writing it down, configuring, testing, training, and helping things settle after go-live—without disappearing after a PDF handover.";
+  "My path so far—shaped by real-world projects, hands-on experience, complex systems, and a focus on building solutions that work.";
 
 /** Sub-heading above program / project lists (shared across experience cards) */
 export const experienceNotableProjectsTitle = "Notable Projects" as const;
@@ -375,7 +375,7 @@ export const experienceTimeline = [
     organization: "Upwork & Fiverr",
     location: "Freelancing",
     periodLabel: "2024 – Till Date",
-    role: "Automation & Integration Specialist",
+    role: "Business Automation, and API Integration",
     eyebrow: freelanceAutomation.sectionTitle,
     intro: freelanceAutomation.intro,
     projectsSectionTitle: experienceNotableProjectsTitle,
