@@ -86,14 +86,14 @@ export default function Hero({ onOpenSection, onChatSubmit }: Props) {
 
       <motion.div
         variants={staggerItem}
-        className="w-full max-w-[min(100vw,42rem)] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:overflow-visible"
+        className="w-full max-w-[min(100vw,42rem)]"
       >
         <div className="flex justify-center pb-0.5 pt-1 sm:pb-0">
           <NavPills
             active={null}
             onSelect={onOpenSection}
             density="compact"
-            layout="singleRow"
+            layout="wrap"
           />
         </div>
       </motion.div>

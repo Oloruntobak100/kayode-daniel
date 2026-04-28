@@ -45,7 +45,6 @@ export default function Home() {
             <SectionLayout
               activeSection={activeSection}
               onSelectSection={openSection}
-              onChatSubmit={handleChatSubmit}
               onBackHome={goHero}
             />
           </motion.div>
