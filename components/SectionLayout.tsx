@@ -10,6 +10,7 @@ import Contact from "@/components/sections/Contact";
 import Experience from "@/components/sections/Experience";
 import Me from "@/components/sections/Me";
 import Projects from "@/components/sections/Projects";
+import Skills from "@/components/sections/Skills";
 import SkillsSection from "@/components/sections/SkillsSection";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { fadeSlideUp, sectionMarqueeSafe } from "@/lib/animations";
@@ -44,7 +45,12 @@ export default function SectionLayout({
       case "projects":
         return <Projects />;
       case "skills":
-        return <SkillsSection />;
+        return (
+          <div className="flex w-full flex-col gap-12 md:gap-14">
+            <SkillsSection />
+            <Skills />
+          </div>
+        );
       case "blog":
         return <Blog />;
       case "contact":

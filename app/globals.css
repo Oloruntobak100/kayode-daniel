@@ -84,6 +84,52 @@ body {
   );
 }
 
+/** Skills marquee — seamless horizontal loops (pairs with components/sections/Skills.tsx) */
+@keyframes marqueeLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marqueeRight {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.marquee-track {
+  width: max-content;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.marquee-track--left {
+  animation-name: marqueeLeft;
+  animation-duration: var(--mq-dur, 38s);
+}
+
+.marquee-track--right {
+  animation-name: marqueeRight;
+  animation-duration: var(--mq-dur, 32s);
+}
+
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

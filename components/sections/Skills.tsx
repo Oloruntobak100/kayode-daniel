@@ -1,286 +1,168 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import {
-  useLayoutEffect,
-  useRef,
-  useSyncExternalStore,
-} from "react";
 import type { LucideIcon } from "lucide-react";
-import {
-  BarChart3,
-  ClipboardCheck,
-  Cloud,
-  Code2,
-  Database,
-  GitBranch,
-  HardDrive,
-  Layers,
-  ListOrdered,
-  Package,
-  Workflow,
-  Wind,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/animations";
-import { skillsMarqueeItems as strip } from "@/lib/content";
+import { Plug } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type StripItem = (typeof strip)[number];
+export type MarqueeSkill = {
+  name: string;
+  slug: string | null;
+  /** Hex without `#` for cdn.simpleicons.org */
+  color?: string;
+  fallback?: LucideIcon;
+};
 
-/** Stable row splits — avoids new array refs each render breaking the marquee loop. */
-const MARQUEE_MID = Math.ceil(strip.length / 2);
-const SKILL_ROW_TOP = strip.slice(0, MARQUEE_MID);
-const SKILL_ROW_BOTTOM = strip.slice(MARQUEE_MID);
+/** Curated stack logos (~28) — round-robin split across 4 rows */
+export const SKILLS_MARQUEE_DATA: MarqueeSkill[] = [
+  { name: "Next.js", slug: "nextdotjs", color: "000000" },
+  { name: "React", slug: "react", color: "61DAFB" },
+  { name: "TypeScript", slug: "typescript", color: "3178C6" },
+  { name: "JavaScript", slug: "javascript", color: "F7DF1E" },
+  { name: "Tailwind CSS", slug: "tailwindcss", color: "06B6D4" },
+  { name: "Framer Motion", slug: "framer", color: "0055FF" },
+  { name: "Node.js", slug: "nodedotjs", color: "339933" },
+  { name: "GraphQL", slug: "graphql", color: "E10098" },
+  { name: "Supabase", slug: "supabase", color: "3FCF8E" },
+  { name: "PostgreSQL", slug: "postgresql", color: "4169E1" },
+  { name: "Prisma", slug: "prisma", color: "2D3748" },
+  { name: "Redis", slug: "redis", color: "DC382D" },
+  { name: "Firebase", slug: "firebase", color: "DD2C00" },
+  { name: "Vercel", slug: "vercel", color: "000000" },
+  { name: "Cloudflare", slug: "cloudflare", color: "F38020" },
+  { name: "Railway", slug: "railway", color: "0B0D0E" },
+  { name: "Hetzner", slug: "hetzner", color: "D50C2D" },
+  { name: "GitHub", slug: "github", color: "181717" },
+  { name: "Docker", slug: "docker", color: "2496ED" },
+  { name: "n8n", slug: "n8n", color: "EA4B71" },
+  { name: "Make", slug: "make", color: "6D00CC" },
+  { name: "Zapier", slug: "zapier", color: "FF4A00" },
+  { name: "OpenAI", slug: "openai", color: "412991" },
+  { name: "Anthropic", slug: "anthropic", color: "D97757" },
+  { name: "Telegram", slug: "telegram", color: "26A5E4" },
+  { name: "Stripe", slug: "stripe", color: "635BFF" },
+  { name: "QuickBooks", slug: "intuit", color: "2CA01C" },
+  { name: "Flutter", slug: "flutter", color: "02569B" },
+];
 
-function subscribeReducedMotion(cb: () => void): () => void {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
+/** Distribute items round-robin so each row stays balanced when the list grows */
+export function chunkIntoRows<T>(items: readonly T[], rowCount: number): T[][] {
+  const rows: T[][] = Array.from({ length: rowCount }, () => []);
+  items.forEach((item, i) => {
+    rows[i % rowCount]!.push(item);
+  });
+  return rows;
 }
 
-function getReducedMotionSnapshot(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+const ROWS = [
+  { direction: "left" as const, durationSec: 38 },
+  { direction: "right" as const, durationSec: 28 },
+  { direction: "left" as const, durationSec: 44 },
+  { direction: "right" as const, durationSec: 32 },
+];
 
-/** SSR / hydration: assume motion ok until client reads real preference. */
-function usePrefersReducedMotion(): boolean {
-  return useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    () => false
-  );
-}
+const maskStyle: CSSProperties = {
+  maskImage:
+    "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+  WebkitMaskImage:
+    "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+};
 
-function iconForSkill(name: string): LucideIcon {
-  const n = name.toLowerCase();
-  if (n.includes("react") && !n.includes("next")) return Layers;
-  if (n.includes("tailwind")) return Wind;
-  if (n.includes("git")) return GitBranch;
-  if (n.includes("docker")) return Package;
-  if (n.includes("redis")) return HardDrive;
-  if (n.includes("bull") || n.includes("queue")) return ListOrdered;
-  if (n.includes("test") || n.includes("uat")) return ClipboardCheck;
-  if (
-    n.includes("power") ||
-    n.includes("dax") ||
-    n.includes("viz") ||
-    n.includes("schema")
-  )
-    return BarChart3;
-  if (
-    n.includes("n8n") ||
-    n.includes("webhook") ||
-    n.includes("orchestr")
-  )
-    return Workflow;
-  if (n.includes("sql") || n.includes("postgres") || n.includes("supabase"))
-    return Database;
-  if (
-    n.includes("vercel") ||
-    n.includes("deploy") ||
-    n.includes("cloud")
-  )
-    return Cloud;
-  return Code2;
-}
+function SkillPill({ skill }: { skill: MarqueeSkill }) {
+  const Fallback = skill.fallback ?? Plug;
+  const hex = skill.color ?? "525252";
 
-function SkillStripCard({ item }: { item: StripItem }) {
-  const Icon = iconForSkill(item.name);
   return (
-    <div
+    <span
       className={cn(
-        "flex min-w-[13.5rem] shrink-0 items-center gap-3 rounded-2xl border border-black/10 bg-white/75 px-4 py-3 shadow-soft backdrop-blur-md transition sm:min-w-[15rem] sm:px-5 sm:py-3.5",
-        "hover:border-accent/35 hover:shadow-glass"
+        "inline-flex shrink-0 items-center gap-2.5 rounded-2xl border border-black/[0.08] bg-white/[0.85] px-4 py-2.5 shadow-soft backdrop-blur-md transition",
+        "hover:border-black/15 hover:shadow-glass"
       )}
     >
-      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent">
-        <Icon className="h-5 w-5" aria-hidden />
-      </span>
-      <div className="min-w-0">
-        <p className="font-display text-base font-semibold uppercase tracking-wide text-foreground">
-          {item.name}
-        </p>
-        <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-          {item.group}
-        </p>
-      </div>
-    </div>
+      {skill.slug ? (
+        // eslint-disable-next-line @next/next/no-img-element -- Simple Icons CDN SVGs; no Next/Image pipeline needed
+        <img
+          src={`https://cdn.simpleicons.org/${skill.slug}/${hex}`}
+          alt=""
+          width={20}
+          height={20}
+          loading="lazy"
+          decoding="async"
+          className="h-5 w-5 shrink-0"
+        />
+      ) : (
+        <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center text-foreground/70">
+          <Fallback className="h-4 w-4" aria-hidden />
+        </span>
+      )}
+      <span className="text-sm font-medium text-foreground">{skill.name}</span>
+    </span>
   );
 }
 
-/**
- * Pixel infinite marquee via requestAnimationFrame.
- * Avoid any ancestor Framer `transform` on the Skills route (SectionLayout uses `sectionMarqueeSafe`).
- */
-function MarqueeTrack({
-  items,
+function MarqueeRow({
+  skills,
   direction,
   durationSec,
 }: {
-  items: readonly StripItem[];
+  skills: readonly MarqueeSkill[];
   direction: "left" | "right";
-  durationSec?: number;
+  durationSec: number;
 }) {
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const innerRef = useRef<HTMLDivElement>(null);
-  const offsetRef = useRef(0);
-  const pausedRef = useRef(false);
-  const rightSeedRef = useRef(false);
-  const rafRef = useRef(0);
-
-  const loopItems = prefersReducedMotion ? [...items] : [...items, ...items];
-  const seconds = durationSec ?? 30;
-
-  useLayoutEffect(() => {
-    if (prefersReducedMotion) return;
-
-    const el = innerRef.current;
-    if (!el) return;
-
-    let cancelled = false;
-    let last = performance.now();
-
-    const tick = (now: number) => {
-      if (cancelled) return;
-
-      const seg = el.scrollWidth / 2;
-      const dt = Math.min((now - last) / 1000, 0.08);
-      last = now;
-
-      if (seg > 4) {
-        const speed = seg / seconds;
-
-        if (direction === "right") {
-          if (!rightSeedRef.current) {
-            offsetRef.current = -seg;
-            rightSeedRef.current = true;
-          }
-          if (!pausedRef.current) {
-            offsetRef.current += speed * dt;
-            while (offsetRef.current >= 0) {
-              offsetRef.current -= seg;
-            }
-          }
-        } else if (!pausedRef.current) {
-          offsetRef.current -= speed * dt;
-          while (offsetRef.current <= -seg) {
-            offsetRef.current += seg;
-          }
-        }
-
-        el.style.transform = `translate3d(${offsetRef.current}px,0,0)`;
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-
-    let resizeDebounce: ReturnType<typeof setTimeout> | undefined;
-    const ro = new ResizeObserver(() => {
-      clearTimeout(resizeDebounce);
-      resizeDebounce = setTimeout(() => {
-        if (direction === "left") {
-          offsetRef.current = 0;
-        } else {
-          rightSeedRef.current = false;
-          offsetRef.current = 0;
-        }
-      }, 140);
-    });
-    ro.observe(el);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(resizeDebounce);
-      cancelAnimationFrame(rafRef.current);
-      ro.disconnect();
-      rightSeedRef.current = false;
-      offsetRef.current = 0;
-      el.style.transform = "";
-    };
-  }, [direction, seconds, prefersReducedMotion]);
-
-  const maskStyle = {
-    maskImage:
-      "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-    WebkitMaskImage:
-      "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-  } as const;
+  const doubled = [...skills, ...skills];
 
   return (
-    <div
-      className="relative isolate overflow-hidden py-2"
-      style={maskStyle as CSSProperties}
-      onMouseEnter={() => {
-        pausedRef.current = true;
-      }}
-      onMouseLeave={() => {
-        pausedRef.current = false;
-      }}
-    >
+    <div className="marquee-row relative isolate overflow-hidden py-2" style={maskStyle}>
       <div
-        ref={innerRef}
-        className="flex w-max gap-4 pr-4 will-change-transform"
+        className={cn(
+          "marquee-track flex w-max gap-3 pr-3",
+          direction === "left" ? "marquee-track--left" : "marquee-track--right"
+        )}
+        style={
+          {
+            "--mq-dur": `${durationSec}s`,
+          } as CSSProperties
+        }
       >
-        {loopItems.map((item, idx) => (
-          <SkillStripCard key={`${item.id}-${idx}`} item={item} />
+        {doubled.map((skill, idx) => (
+          <SkillPill key={`${skill.name}-${idx}`} skill={skill} />
         ))}
       </div>
     </div>
   );
 }
 
+/** Four-row infinite marquee — rows 1 & 3 left, 2 & 4 right; speeds differ per row */
+export function SkillsMarquee() {
+  const rowChunks = chunkIntoRows(SKILLS_MARQUEE_DATA, 4);
+
+  return (
+    <div className="flex w-full flex-col gap-1 md:gap-1.5">
+      {ROWS.map((row, i) => (
+        <MarqueeRow
+          key={i}
+          skills={rowChunks[i] ?? []}
+          direction={row.direction}
+          durationSec={row.durationSec}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** Section wrapper + marquee — composes below SkillsSection on the Skills route */
 export default function Skills() {
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-      className="w-full max-w-none space-y-10 pb-10"
-    >
-      <motion.div
-        variants={staggerItem}
-        className="relative overflow-hidden rounded-3xl px-1 pb-2 pt-1"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(79,110,247,0.09),transparent_58%)]"
-        />
-        <div className="relative space-y-3 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted">
-            Inventory
-          </p>
-          <h2 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            <span className="text-foreground">The </span>
-            <span className="bg-gradient-to-r from-foreground via-foreground to-accent bg-clip-text text-transparent">
-              tech stack
-            </span>
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted">
-            Tools and platforms I use across delivery — infinite scroll; hover a
-            row to pause.
-          </p>
-        </div>
-      </motion.div>
-
-      <div className="space-y-6">
-        <MarqueeTrack items={SKILL_ROW_TOP} direction="right" durationSec={28} />
-        <MarqueeTrack
-          items={SKILL_ROW_BOTTOM}
-          direction="left"
-          durationSec={32}
-        />
-      </div>
-
-      <motion.p
-        variants={staggerItem}
-        className="text-center text-xs text-muted"
-      >
-        Categories mirror your structured stack in{" "}
-        <code className="font-mono text-[10px]">lib/portfolio-source.ts</code>.
-      </motion.p>
-    </motion.div>
+    <section className="w-full max-w-none space-y-6 pb-6">
+      <header className="px-1 text-center md:text-left">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-muted">
+          Stack
+        </p>
+        <h3 className="font-display mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
+          Tools I build with
+        </h3>
+      </header>
+      <SkillsMarquee />
+    </section>
   );
 }
