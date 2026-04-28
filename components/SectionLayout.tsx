@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import ChatInput from "@/components/ChatInput";
 import NavPills from "@/components/NavPills";
 import SectionVisual from "@/components/SectionVisual";
@@ -29,6 +29,23 @@ export default function SectionLayout({
   onChatSubmit,
   onBackHome,
 }: Props) {
+  const orderedSections: SectionId[] = [
+    "me",
+    "experience",
+    "projects",
+    "skills",
+    "blog",
+    "contact",
+  ];
+
+  const activeIndex = orderedSections.indexOf(activeSection);
+  const prevSection =
+    orderedSections[
+      (activeIndex - 1 + orderedSections.length) % orderedSections.length
+    ]!;
+  const nextSection =
+    orderedSections[(activeIndex + 1) % orderedSections.length]!;
+
   /** Full-width content (no portrait column) */
   const hideAside =
     activeSection === "experience" ||
@@ -107,20 +124,40 @@ export default function SectionLayout({
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-          {/* Single row: chat + nav — frees vertical space above */}
-          <div className="flex flex-row flex-nowrap items-center gap-2 sm:gap-3 md:gap-4">
-            <div className="min-w-0 w-[min(100%,18rem)] shrink-0 sm:w-auto sm:max-w-md sm:flex-[0.85] md:max-w-lg md:flex-[1]">
+          {/* Mobile-first dock: wrapped nav (all pills visible), row layout on larger screens */}
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-3 md:gap-4">
+            <div className="min-w-0 w-full sm:w-auto sm:max-w-md sm:flex-[0.85] md:max-w-lg md:flex-[1]">
               <ChatInput onSubmit={onChatSubmit} variant="dock" />
             </div>
-            <div className="min-h-[2.75rem] min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex min-h-[2.75rem] items-center justify-start pb-px">
+            <div className="min-w-0 flex-1">
+              <div className="flex min-h-[2.75rem] items-center justify-center sm:justify-start pb-px">
                 <NavPills
                   active={activeSection}
                   onSelect={onSelectSection}
                   density="compact"
-                  layout="singleRow"
+                  layout="wrap"
                 />
               </div>
+            </div>
+            <div className="flex items-center justify-center gap-2 sm:justify-end">
+              <MagneticButton
+                type="button"
+                onClick={() => onSelectSection(prevSection)}
+                className="glass-pill inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-foreground/90"
+                aria-label={`Go to previous section: ${prevSection}`}
+              >
+                <ChevronLeft className="h-3.5 w-3.5 text-accent" aria-hidden />
+                Prev
+              </MagneticButton>
+              <MagneticButton
+                type="button"
+                onClick={() => onSelectSection(nextSection)}
+                className="glass-pill inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-foreground/90"
+                aria-label={`Go to next section: ${nextSection}`}
+              >
+                Next
+                <ChevronRight className="h-3.5 w-3.5 text-accent" aria-hidden />
+              </MagneticButton>
             </div>
           </div>
           <p className="mt-2 text-center text-[11px] text-muted">

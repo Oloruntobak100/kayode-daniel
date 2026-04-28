@@ -265,18 +265,10 @@ export default function ExperienceTimeline({
 
           return (
             <div key={entry.id} className="relative md:pb-28 md:last:pb-12">
-              {/* Mobile */}
-              <div className="flex gap-5 pl-1 md:hidden">
-                <div className="relative flex shrink-0 flex-col items-center">
-                  <TimelineNode Icon={Icon} />
-                  {!isLast && (
-                    <div className="mt-2 min-h-[4rem] w-px flex-1 bg-black/10" aria-hidden />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1 space-y-5 pb-4">
-                  <DatePill label={entry.periodLabel} />
-                  <TimelineCard entry={entry} />
-                </div>
+              {/* Mobile — prioritize readability over timeline ornamentation */}
+              <div className="space-y-4 pb-4 md:hidden">
+                <DatePill label={entry.periodLabel} />
+                <TimelineCard entry={entry} />
               </div>
 
               {/* Desktop alternating — 30% date column / 70% content column (swap when date flips side) */}
