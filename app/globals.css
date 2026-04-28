@@ -18,6 +18,72 @@ body {
   background: var(--background);
 }
 
+/** Skills section — slow mesh drift (disabled when prefers-reduced-motion) */
+@keyframes skillsMesh {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(2%, -1.5%, 0);
+  }
+}
+
+.skills-grid-bg {
+  border-radius: inherit;
+}
+
+.skills-grid-bg::before,
+.skills-grid-bg::after {
+  content: "";
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  filter: blur(0.5px);
+  will-change: transform;
+}
+
+.skills-grid-bg::before {
+  top: -10%;
+  left: -15%;
+  background: radial-gradient(ellipse at center, rgba(79, 110, 247, 0.24), transparent 65%);
+  animation: skillsMesh 14s ease-in-out infinite;
+}
+
+.skills-grid-bg::after {
+  bottom: -12%;
+  right: -15%;
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.2), transparent 65%);
+  animation: skillsMesh 18s ease-in-out infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-grid-bg::before,
+  .skills-grid-bg::after {
+    animation: none;
+  }
+}
+
+.skills-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    rgba(0, 0, 0, 0.4) 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    rgba(0, 0, 0, 0.4) 88%,
+    transparent 100%
+  );
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
