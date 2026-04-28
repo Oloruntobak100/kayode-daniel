@@ -41,9 +41,12 @@ export const profile = {
 export {
   elevatorPitch,
   enterpriseSystems,
+  experienceNotableProjectsTitle,
   experienceOverview,
   experienceTimeline,
+  freelanceAutomation,
   healthcareDeployments,
+  northsnowExperience,
   meMetrics,
   portfolioShowcaseProjects,
   positioningStatement,

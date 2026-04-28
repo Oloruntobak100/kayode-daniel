@@ -160,6 +160,9 @@ export const skillsMarqueeItems = [
 export const experienceOverview =
   "A sample of the programs I have supported all the way through: figuring out requirements, writing it down, configuring, testing, training, and helping things settle after go-live—without disappearing after a PDF handover.";
 
+/** Sub-heading above program / project lists (shared across experience cards) */
+export const experienceNotableProjectsTitle = "Notable Projects" as const;
+
 /** Government & large-program credibility */
 export const enterpriseSystems = {
   sectionTitle: "Government & enterprise programs",
@@ -256,6 +259,82 @@ export const healthcareDeployments = {
   ],
 } as const;
 
+/** Freelance — API integration & automation (Upwork / Fiverr) */
+export const freelanceAutomation = {
+  sectionTitle: "API Integration & Workflow Automation",
+  intro:
+    "I work as a freelance Automation & Integration Specialist on Fiverr and Upwork, helping businesses eliminate manual work and connect their systems end-to-end. My focus is on building reliable workflows using APIs, n8n, and AI agents that actually solve real operational problems. I take time to understand how a business runs, then design automation that fits naturally into their process.",
+
+  automationCategories: [
+    "Business Process Automation",
+    "AI Agents & Chatbots",
+    "QuickBooks & Accounting AI Automation",
+    "Social Media Automation",
+    "SaaS, Web & Mobile Application Development",
+  ],
+
+  roleSummary: [
+    "I design and build end-to-end workflow automation systems using n8n, APIs, webhooks, OAuth, and JWT.",
+    "I integrate CRMs (HubSpot, Salesforce, GoHighLevel, custom systems) with internal tools, finance platforms, and databases.",
+    "I develop AI-powered workflows for data classification, routing, summarization, and decision support.",
+    "I automate reporting, data synchronization, and error handling to ensure reliable, production-ready systems.",
+    "I analyze business processes, redesign workflows, and implement automation that reduces manual effort and improves efficiency.",
+  ],
+} as const;
+
+/** Northsnow — product suite & engineering scope */
+export const northsnowExperience = {
+  sectionTitle: "Full-stack product delivery",
+  intro:
+    "I build functional products, not just apps—turning ideas into scalable, production-ready systems. I work across mobile, web, and backend, combining clean architecture with real-time workflows, automation, and AI. My focus is on creating applications that function, connect, respond, and scale with the business. From MVP to full deployment, I handle the entire lifecycle.",
+
+  notableProjects: [
+    {
+      title: "Godeapp",
+      description:
+        "A unified social platform that connects cloud storage (Google Drive, Dropbox, OneDrive) with content sharing, live streaming, subscriptions, and creator monetization—all in one ecosystem.",
+    },
+    {
+      title: "Quantiva",
+      description:
+        "An AI-powered document generation platform that supports everything from academic writing to enterprise compliance, serving individuals, teams, and entire organizations.",
+    },
+    {
+      title: "PainScope",
+      description:
+        "Autonomous AI agents that continuously scan the web to identify unmet customer needs and quantify their business potential with data-backed insights.",
+    },
+    {
+      title: "Leadii",
+      description:
+        "AI-driven outbound system that researches, qualifies, and engages prospects across WhatsApp, SMS, and social platforms—running fully automated outreach workflows.",
+    },
+    {
+      title: "PayPill",
+      description:
+        "A digital healthcare ecosystem combining AI and blockchain to deliver intelligent patient management and next-generation healthcare infrastructure.",
+    },
+    {
+      title: "DataMiner AI",
+      description:
+        "A structured web scraping and data extraction platform that pulls data from predefined sources, processes it, and generates clean, actionable reports automatically.",
+    },
+    {
+      title: "IOLTA Compliance & QuickBooks AI Agent",
+      description:
+        "An AI-powered compliance system that monitors trust accounts, integrates with QuickBooks, detects anomalies, and keeps firms audit-ready through a natural language interface.",
+    },
+  ],
+
+  roleSummary: [
+    "I design and build full-stack applications across mobile, web, and backend systems using modern frameworks and scalable architectures.",
+    "I develop event-driven systems using APIs and webhooks, enabling real-time automation and seamless system communication.",
+    "I integrate AI capabilities into products for decision-making, automation, and intelligent user interactions.",
+    "I handle end-to-end product development—from architecture and database design to deployment and scaling.",
+    "I build production-ready MVPs that are stable, extensible, and aligned with real business use cases.",
+  ],
+} as const;
+
 /**
  * Experience section — vertical timeline (dates & locations as provided).
  * Program and healthcare lines are derived from the blocks above.
@@ -269,6 +348,7 @@ export const experienceTimeline = [
     role: "Project Manager & Systems Analyst",
     eyebrow: enterpriseSystems.sectionTitle,
     intro: enterpriseSystems.intro,
+    projectsSectionTitle: experienceNotableProjectsTitle,
     programs: enterpriseSystems.programs.map(
       (p) => `${p.shortName} — ${p.name}`
     ),
@@ -283,7 +363,7 @@ export const experienceTimeline = [
     role: "System Analyst / Deployment Engineer",
     eyebrow: healthcareDeployments.sectionTitle,
     intro: healthcareDeployments.intro,
-    projectsSectionTitle: "Projects",
+    projectsSectionTitle: experienceNotableProjectsTitle,
     programs: healthcareDeployments.programs.map(
       (p) => `${p.shortName} — ${p.name}`
     ),
@@ -291,28 +371,32 @@ export const experienceTimeline = [
     roleBullets: [...healthcareDeployments.roleSummary],
   },
   {
+    id: "freelance",
+    organization: "Upwork & Fiverr",
+    location: "Freelancing",
+    periodLabel: "2024 – Till Date",
+    role: "Automation & Integration Specialist",
+    eyebrow: freelanceAutomation.sectionTitle,
+    intro: freelanceAutomation.intro,
+    projectsSectionTitle: experienceNotableProjectsTitle,
+    programs: [...freelanceAutomation.automationCategories],
+    roleSectionTitle: "Key Roles & Contributions",
+    roleBullets: [...freelanceAutomation.roleSummary],
+  },
+  {
     id: "northsnow",
     organization: "Northsnow",
     location: "United Kingdom",
     periodLabel: "Mar 2024 – Present",
-    role: "Lead System Architect & Lead Developer",
-    eyebrow: "Full-stack product delivery",
-    intro:
-      "I lead how we shape and build Northsnow’s web and mobile apps: turning a product idea into something we can run in production, then improve without breaking what users already trust.",
-    productHighlight:
-      "The suite includes Godea, Quantiva, PainScope, PayPill, Leadii, and Accounting Automation—covering analytics, day-to-day ops, healthcare, payments, leads, and finance workflows.",
-    stackTitle: "Core tools & deployment",
-    stackBullets: [
-      "Next.js, React, TypeScript",
-      "Node.js, REST & event-driven APIs",
-      "BullMQ, Redis (queues & caching)",
-      "GitHub — reviews, collaboration, and CI",
-      "PostgreSQL, Docker, cloud-native deployments",
-    ],
-    deliveryBullets: [
-      "I own the line from “what are we building?” to shipping and the next release—not just the first cut",
-      "I treat speed, stability, and security as things you plan for, not things you fix after a bad week",
-    ],
+    role: "Software Engineer",
+    eyebrow: northsnowExperience.sectionTitle,
+    intro: northsnowExperience.intro,
+    projectsSectionTitle: experienceNotableProjectsTitle,
+    programs: northsnowExperience.notableProjects.map(
+      (p) => `${p.title} — ${p.description}`
+    ),
+    roleSectionTitle: "Key Roles & Contributions",
+    roleBullets: [...northsnowExperience.roleSummary],
   },
 ] as const;
 

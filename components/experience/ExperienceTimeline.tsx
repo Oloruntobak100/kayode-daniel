@@ -8,38 +8,13 @@ import {
   Code2,
   Landmark,
   Stethoscope,
+  Workflow,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { experienceTimeline } from "@/lib/portfolio-source";
 import { cn } from "@/lib/utils";
 
 type TimelineEntry = (typeof experienceTimeline)[number];
-type MaybeachEntry = (typeof experienceTimeline)[0];
-type HyellaEntry = (typeof experienceTimeline)[1];
-type NorthsnowEntry = (typeof experienceTimeline)[2];
-
-function isMaybeach(e: TimelineEntry): e is MaybeachEntry {
-  return e.id === "maybeach";
-}
-
-function isHyella(e: TimelineEntry): e is HyellaEntry {
-  return e.id === "hyella";
-}
-
-function isNorthsnow(e: TimelineEntry): e is NorthsnowEntry {
-  return e.id === "northsnow";
-}
-
-function iconFor(id: TimelineEntry["id"]): LucideIcon {
-  switch (id) {
-    case "maybeach":
-      return Landmark;
-    case "hyella":
-      return Stethoscope;
-    default:
-      return Code2;
-  }
-}
 
 function ChevronBulletList({ items }: { items: readonly string[] }) {
   return (
@@ -54,6 +29,33 @@ function ChevronBulletList({ items }: { items: readonly string[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Border-l rows: optional `Title — subtitle` split; category-only lines stay bold-only */
+function ProgramLines({ lines }: { lines: readonly string[] }) {
+  return (
+    <div className="space-y-4">
+      {lines.map((line) => {
+        const parts = line.split(" — ");
+        const rest = parts.slice(1).join(" — ").trim();
+        const hasSecondary = parts.length > 1 && rest.length > 0;
+        return (
+          <p
+            key={line}
+            className="border-l border-black/10 pl-3 text-sm leading-snug text-foreground/90"
+          >
+            <span className="font-semibold text-foreground">{parts[0]}</span>
+            {hasSecondary ? (
+              <>
+                <span className="text-muted"> — </span>
+                <span>{rest}</span>
+              </>
+            ) : null}
+          </p>
+        );
+      })}
+    </div>
   );
 }
 
@@ -74,98 +76,42 @@ function TimelineNode({ Icon }: { Icon: LucideIcon }) {
   );
 }
 
+function iconFor(id: TimelineEntry["id"]): LucideIcon {
+  switch (id) {
+    case "maybeach":
+      return Landmark;
+    case "hyella":
+      return Stethoscope;
+    case "freelance":
+      return Workflow;
+    default:
+      return Code2;
+  }
+}
+
 function TimelineCardBody({ entry }: { entry: TimelineEntry }) {
-  if (isMaybeach(entry)) {
-    return (
-      <>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
-          {entry.eyebrow}
+  return (
+    <>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+        {entry.eyebrow}
+      </p>
+      <p className="mt-3 text-sm leading-relaxed text-muted">{entry.intro}</p>
+      <div className="mt-6 space-y-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          {entry.projectsSectionTitle}
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{entry.intro}</p>
-        <div className="mt-6 space-y-4">
-          {entry.programs.map((line) => (
-            <p
-              key={line}
-              className="border-l border-black/10 pl-3 text-sm leading-snug text-foreground/90"
-            >
-              <span className="font-semibold text-foreground">{line.split(" — ")[0]}</span>
-              <span className="text-muted"> — </span>
-              <span>{line.split(" — ").slice(1).join(" — ")}</span>
-            </p>
-          ))}
-        </div>
-        <div className="mt-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.roleSectionTitle}
-          </p>
-          <div className="mt-4">
-            <ChevronBulletList items={entry.roleBullets} />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  if (isHyella(entry)) {
-    return (
-      <>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
-          {entry.eyebrow}
+        <ProgramLines lines={entry.programs} />
+      </div>
+      <div className="mt-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          {entry.roleSectionTitle}
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{entry.intro}</p>
-        <div className="mt-6 space-y-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.projectsSectionTitle}
-          </p>
-          <div className="space-y-4">
-            {entry.programs.map((line) => (
-              <p
-                key={line}
-                className="border-l border-black/10 pl-3 text-sm leading-snug text-foreground/90"
-              >
-                <span className="font-semibold text-foreground">{line.split(" — ")[0]}</span>
-                <span className="text-muted"> — </span>
-                <span>{line.split(" — ").slice(1).join(" — ")}</span>
-              </p>
-            ))}
-          </div>
+        <div className="mt-4">
+          <ChevronBulletList items={entry.roleBullets} />
         </div>
-        <div className="mt-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.roleSectionTitle}
-          </p>
-          <div className="mt-4">
-            <ChevronBulletList items={entry.roleBullets} />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  if (isNorthsnow(entry)) {
-    return (
-      <>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
-          {entry.eyebrow}
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{entry.intro}</p>
-        <p className="mt-6 text-sm leading-relaxed text-foreground/90">{entry.productHighlight}</p>
-        <div className="mt-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.stackTitle}
-          </p>
-          <div className="mt-4">
-            <ChevronBulletList items={entry.stackBullets} />
-          </div>
-        </div>
-        <div className="mt-8">
-          <ChevronBulletList items={entry.deliveryBullets} />
-        </div>
-      </>
-    );
-  }
-
-  return null;
+      </div>
+    </>
+  );
 }
 
 function TimelineCard({ entry }: { entry: TimelineEntry }) {
