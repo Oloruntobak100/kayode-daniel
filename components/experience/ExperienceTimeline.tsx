@@ -147,11 +147,12 @@ function FreelanceNotableAccordion({ groups }: { groups: readonly ProgramGroup[]
                     {group.items.map((item) => (
                       <li
                         key={item}
-                        className="flex gap-3 text-sm leading-relaxed text-foreground/88"
+                        className="flex gap-2.5 text-sm leading-relaxed text-foreground/88"
                       >
-                        <span
-                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]/55"
+                        <ChevronRight
+                          className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--accent)]"
                           aria-hidden
+                          strokeWidth={2}
                         />
                         <span>{item}</span>
                       </li>
