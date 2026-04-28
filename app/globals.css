@@ -124,6 +124,10 @@ body {
   animation-play-state: paused;
 }
 
+.marquee-row {
+  touch-action: pan-y;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

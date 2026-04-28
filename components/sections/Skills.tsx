@@ -75,7 +75,7 @@ function SkillPill({ skill }: { skill: MarqueeSkill }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-2.5 rounded-2xl border border-black/[0.08] bg-white/[0.85] px-4 py-2.5 shadow-soft backdrop-blur-md transition",
+        "inline-flex shrink-0 items-center gap-2 rounded-xl border border-black/[0.08] bg-white/[0.85] px-3 py-2 shadow-soft backdrop-blur-md transition sm:gap-2.5 sm:rounded-2xl sm:px-4 sm:py-2.5",
         "hover:border-black/15 hover:shadow-glass"
       )}
     >
@@ -88,14 +88,16 @@ function SkillPill({ skill }: { skill: MarqueeSkill }) {
           height={20}
           loading="lazy"
           decoding="async"
-          className="h-5 w-5 shrink-0"
+          className="h-4 w-4 shrink-0 sm:h-5 sm:w-5"
         />
       ) : (
-        <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center text-foreground/70">
+        <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center text-foreground/70 sm:h-5 sm:w-5">
           <Fallback className="h-4 w-4" aria-hidden />
         </span>
       )}
-      <span className="text-sm font-medium text-foreground">{skill.name}</span>
+      <span className="whitespace-nowrap text-xs font-medium text-foreground sm:text-sm">
+        {skill.name}
+      </span>
     </span>
   );
 }
@@ -112,10 +114,10 @@ function MarqueeRow({
   const doubled = [...skills, ...skills];
 
   return (
-    <div className="marquee-row relative isolate overflow-hidden py-2" style={maskStyle}>
+    <div className="marquee-row relative isolate overflow-hidden py-1.5 sm:py-2" style={maskStyle}>
       <div
         className={cn(
-          "marquee-track flex w-max gap-3 pr-3",
+          "marquee-track flex w-max gap-2 pr-2 sm:gap-3 sm:pr-3",
           direction === "left" ? "marquee-track--left" : "marquee-track--right"
         )}
         style={
@@ -153,12 +155,12 @@ export function SkillsMarquee() {
 /** Section wrapper + marquee — composes below SkillsSection on the Skills route */
 export default function Skills() {
   return (
-    <section className="w-full max-w-none space-y-6 pb-6">
+    <section className="w-full max-w-none space-y-4 pb-8 sm:space-y-6 sm:pb-10">
       <header className="px-1 text-center md:text-left">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-muted">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-muted sm:text-[11px] sm:tracking-[0.35em]">
           Stack
         </p>
-        <h3 className="font-display mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
+        <h3 className="font-display mt-2 text-xl font-semibold tracking-tight sm:text-2xl md:text-3xl">
           Tools I build with
         </h3>
       </header>
