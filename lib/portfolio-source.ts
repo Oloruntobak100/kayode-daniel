@@ -265,12 +265,77 @@ export const freelanceAutomation = {
   intro:
     "I work as a freelance Automation & Integration Specialist on Fiverr and Upwork, helping businesses eliminate manual work and connect their systems end-to-end. My focus is on building reliable workflows using APIs, n8n, and AI agents that actually solve real operational problems. I take time to understand how a business runs, then design automation that fits naturally into their process.",
 
-  automationCategories: [
-    "Business Process Automation",
-    "AI Agents & Chatbots",
-    "QuickBooks & Accounting AI Automation",
-    "Social Media Automation",
-    "SaaS, Web & Mobile Application Development",
+  /** Expandable notable-project groups (Experience card — freelance only) */
+  notableGroups: [
+    {
+      id: "business-process",
+      title: "Business Process Automation",
+      items: [
+        "Automating GoHighLevel CRM via Telegram with n8n, Make, Zapier MCP & Cursor",
+        "Automated Custom PDF Document Generator using n8n & GoogleSheets",
+        "Three-Way IOLTA Trust Account Reconciliation Automation",
+        "Multi-Agent MCP Workflow via Telegram Chatbot",
+        "Automated Email-Based Information Retrieval System",
+        "Firecrawl MCP Integration with n8n Automation",
+        "Automate Law Firm Court Forms & Legal Case Documents with n8n",
+        "n8n Webhook Workflow: Send CRM Data → to n8n workflow → Firecrawl Crawl & Return Result",
+      ],
+    },
+    {
+      id: "ai-agents",
+      title: "AI Agents & Chatbots",
+      items: [
+        "WhatsApp Chatbot Automation via Cursor AI + n8n",
+        "Automated Weekly Content Generator – n8n, Telegram & Google Sheets",
+        "Automating GoHighLevel CRM via Telegram with n8n, Make, Zapier MCP & Cursor",
+        "WhatsApp Chatbot with Subscription Access",
+        "Clawdbot AI Setup: Cloud & Local Deployment with Multi-Channel Automation",
+        "Telegram RAG Chatbot Using Supabase Vector Store (Answers from PDFs)",
+      ],
+    },
+    {
+      id: "quickbooks",
+      title: "QuickBooks & Accounting AI Automation",
+      items: [
+        "QuickBooks Automated Transaction Coding Review System",
+        "IOLTA Compliance Management Platform",
+        "Custom Interface for QuickBooks Management Using Cursor AI + Make.com",
+        "QuickBooks Account-Level Financial Chatbot",
+        "Automated Bank Accounts Reconciliation for QuickBooks",
+        "Automate QuickBooks Uncategorized Transaction Detection with n8n",
+        "QuickBooks Old Uncleared Transactions Monitoring Tool",
+        "QuickBooks Large Transaction Monitoring Automation",
+        "IOLTA Account Reconciliation Automation for QuickBooks",
+        "Three-Way IOLTA Trust Account Reconciliation Automation",
+        "Connect to any QuickBooks Account Without API Keys Using n8n & Cursor AI",
+        "QuickBooks Undeposited Funds Tracking Automation",
+      ],
+    },
+    {
+      id: "social-media",
+      title: "Social Media Automation",
+      items: [
+        "AI Video Generation – Shotstack, ElevenLabs & Blotato",
+        "n8n Automation to Create Articles, Images & Post to Social Media",
+        "Automated Weekly Content Generator – n8n, Telegram & Google Sheets",
+        "Video Generation with ffmpeg n8n",
+        "N8N Automated Facebook Posting – Images & Articles",
+        "Automated Video Generation with Kie.ai Veo3",
+        "Automated Instagram Carousel Generation Using AI & Blotato API",
+        "Automated Avatar Motivational Video Creation Using Fal AI & n8n",
+        "RSS feed new extract + posting on Facebook and LinkedIn n8n",
+      ],
+    },
+    {
+      id: "email-warmup",
+      title: "Subdomain and Email Warmup Automation",
+      items: [
+        "Domain & hosting (Zoho) — Adds the subdomain in Zoho Mail and enables mail hosting",
+        "DNS setup (Cloudflare + Zoho) — Configure MX / SPF / DKIM / DMARC in Cloudflare and runs Zoho DNS checks so authentication and routing are correct before connections go live.",
+        "Mailbox & SMTP (Zoho + Mailgun) — Creates the mailbox, sets up Mailgun SMTP credentials, and connects IMAP/SMTP so mail can receive and send as designed.",
+        "Mailivery warmup — Connects the mailbox to Mailivery, applies volume / schedule / ramp‑up, and starts warmup using the finalized DNS and credentials.",
+      ],
+    },
   ],
 
   roleSummary: [
@@ -379,7 +444,7 @@ export const experienceTimeline = [
     eyebrow: freelanceAutomation.sectionTitle,
     intro: freelanceAutomation.intro,
     projectsSectionTitle: experienceNotableProjectsTitle,
-    programs: [...freelanceAutomation.automationCategories],
+    programGroups: [...freelanceAutomation.notableGroups],
     roleSectionTitle: "Key Roles & Contributions",
     roleBullets: [...freelanceAutomation.roleSummary],
   },

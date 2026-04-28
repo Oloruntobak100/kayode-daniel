@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Building2,
   CalendarRange,
+  ChevronDown,
   ChevronRight,
   Code2,
   Landmark,
@@ -16,6 +18,11 @@ import { experienceTimeline } from "@/lib/portfolio-source";
 import { cn } from "@/lib/utils";
 
 type TimelineEntry = (typeof experienceTimeline)[number];
+type FreelanceEntry = Extract<TimelineEntry, { id: "freelance" }>;
+
+function isFreelanceEntry(e: TimelineEntry): e is FreelanceEntry {
+  return e.id === "freelance";
+}
 
 function ChevronBulletList({ items }: { items: readonly string[] }) {
   return (
@@ -68,6 +75,98 @@ function ProgramLines({ lines }: { lines: readonly string[] }) {
   );
 }
 
+type ProgramGroup = FreelanceEntry["programGroups"][number];
+
+function FreelanceNotableAccordion({ groups }: { groups: readonly ProgramGroup[] }) {
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+
+  return (
+    <div className="space-y-2.5">
+      {groups.map((group) => {
+        const isOpen = !!open[group.id];
+        const panelId = `freelance-panel-${group.id}`;
+        const btnId = `freelance-trigger-${group.id}`;
+
+        return (
+          <div
+            key={group.id}
+            className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white/70 shadow-soft ring-1 ring-black/[0.02] backdrop-blur-sm transition-shadow hover:shadow-md hover:ring-black/[0.04]"
+          >
+            <button
+              id={btnId}
+              type="button"
+              aria-expanded={isOpen}
+              aria-controls={panelId}
+              onClick={() =>
+                setOpen((prev) => ({ ...prev, [group.id]: !prev[group.id] }))
+              }
+              className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-black/[0.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]/35 md:px-4 md:py-3.5"
+            >
+              <span
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-black/[0.09] bg-gradient-to-b from-white to-neutral-50 shadow-soft ring-1 ring-black/[0.03]"
+                aria-hidden
+              >
+                <Layers2
+                  className="h-[18px] w-[18px] text-[color:var(--accent)]"
+                  strokeWidth={1.65}
+                />
+              </span>
+              <span className="min-w-0 flex-1 font-semibold text-sm leading-snug text-foreground">
+                {group.title}
+              </span>
+              <span
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-black/10 bg-neutral-50/90 px-2.5 py-0.5 text-[11px] font-medium tabular-nums text-muted"
+                aria-label={`${group.items.length} deliverables`}
+              >
+                {group.items.length}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "h-5 w-5 shrink-0 text-muted transition-transform duration-300 ease-out",
+                  isOpen && "rotate-180 text-[color:var(--accent)]"
+                )}
+                aria-hidden
+                strokeWidth={2}
+              />
+            </button>
+
+            <div
+              className={cn(
+                "grid transition-[grid-template-rows] duration-300 ease-out",
+                isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              )}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={btnId}
+                  className="border-t border-black/[0.06] bg-gradient-to-b from-neutral-50/50 to-transparent px-4 pb-4 pt-3"
+                >
+                  <ul className="space-y-2.5">
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex gap-3 text-sm leading-relaxed text-foreground/88"
+                      >
+                        <span
+                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]/55"
+                          aria-hidden
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function DatePill({ label }: { label: string }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-pill border border-black/12 bg-white px-3 py-2 text-xs font-medium text-foreground shadow-soft backdrop-blur-sm md:text-sm">
@@ -109,7 +208,11 @@ function TimelineCardBody({ entry }: { entry: TimelineEntry }) {
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
           {entry.projectsSectionTitle}
         </p>
-        <ProgramLines lines={entry.programs} />
+        {isFreelanceEntry(entry) ? (
+          <FreelanceNotableAccordion groups={entry.programGroups} />
+        ) : (
+          <ProgramLines lines={entry.programs} />
+        )}
       </div>
       <div className="mt-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
