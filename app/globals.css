@@ -124,12 +124,6 @@ body {
   animation-play-state: paused;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none !important;
-  }
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
