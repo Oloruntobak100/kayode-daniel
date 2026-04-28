@@ -164,7 +164,7 @@ export const experienceOverview =
 export const enterpriseSystems = {
   sectionTitle: "Government & enterprise programs",
   intro:
-    "Most of my work sat between the agencies and clients who needed the software and the team that built it. I listened, wrote down what we agreed, kept everyone pointed at the same picture of “done,” and stuck around for testing and launch so the important details did not get lost in translation.",
+    "I worked as a Systems Analyst and Project Manager at Maybeach Technologies Limited, delivering enterprise software solutions across healthcare, finance, and government sectors. My role spanned the full software lifecycle, with a strong focus on quality assurance, documentation, and process optimization. I consistently delivered reliable, user-focused applications that met client and operational needs.",
 
   programs: [
     {
@@ -206,11 +206,11 @@ export const enterpriseSystems = {
   ],
 
   roleSummary: [
-    "I was the person clients and our developers both came to—workshops, calls, and follow-ups—so the build matched what the business said they needed, not what someone thought they said three months ago",
-    "I met with leaders and their teams, mapped how the work really ran, and put it in writing so the devs knew exactly what to build and how to test it",
-    "I kept the project paperwork honest end to end: what we asked for, how we designed it, what we released, how to use it, and what we handed over at the end",
-    "I did not hand off a build I had not poked: functional checks and UAT with users so we caught issues before the client’s big day",
-    "After launch, I stayed reachable—fixes, small config changes, and helping people get comfortable with the new system",
+    "I led requirements gathering and translated business needs into detailed technical specifications for development teams.",
+    "I developed project work plans, timelines, and implementation strategies to ensure timely delivery.",
+    "I designed and executed comprehensive test cases, identifying and resolving bugs to ensure system reliability.",
+    "I created user manuals, installation guides, and technical documentation to support deployment and adoption.",
+    "I facilitated communication between clients and developers, ensuring alignment, clarity, and successful project outcomes.",
   ],
 } as const;
 
@@ -218,31 +218,41 @@ export const enterpriseSystems = {
 export const healthcareDeployments = {
   sectionTitle: "Healthcare — EMR / EHR deployments",
   intro:
-    "I rolled out and tailored hospital EHR/EMR systems: not a ticket on a wall, but end-to-end—talking to doctors and admin, getting settings right, training people, and staying in the loop after go-live.",
+    "My work involves managing the development, customization, and deployment of Electronic Health Records (EHR) systems for healthcare facilities. I work closely with hospital owners, CEOs, CFOs, heads of departments across different specialties, as well as senior developers and business teams to ensure smooth collaboration and successful project delivery.",
 
-  hospitals: [
-    "St. Nicholas Hospital — Lagos",
-    "NISA Premier Hospital — Abuja",
-    "LIMI Hospitals — Abuja",
-    "Zankli Medical Center",
-    "Adonai Hospital — Nasarawa",
-    "Chivar Specialist Hospital — Abuja",
+  programs: [
+    {
+      shortName: "St. Nicholas Hospital",
+      name: "Lagos",
+    },
+    {
+      shortName: "NISA Premier Hospital",
+      name: "Abuja",
+    },
+    {
+      shortName: "LIMI Hospitals",
+      name: "Abuja",
+    },
+    {
+      shortName: "Zankli Medical Center",
+      name: "Abuja",
+    },
+    {
+      shortName: "Adonai Hospital",
+      name: "Nasarawa",
+    },
+    {
+      shortName: "Chivar Specialist Hospital",
+      name: "Abuja",
+    },
   ],
 
-  deliveryHighlights: [
-    "Walked leadership through what the product could (and could not) do, in language that matched how they make decisions",
-    "Ran working sessions in wards and back office so we did not miss how care and paperwork actually run day to day",
-    "Turned those conversations into how the system was set up: forms, fields, and master data that matched the hospital’s reality",
-    "Coordinated UAT and day-to-day testing with staff so we fixed problems before they hit patients and billing",
-    "Trained end users and a few “super users” so the floor had someone to ask besides calling me for every small thing",
-    "Left real manuals, short videos, and handover notes people could return to when memory fades",
-    "Stuck with sites after go-live: remote help, small tweaks, and nudging performance when something felt clunky",
-  ],
-
-  impact: [
-    "Less paper and fewer side spreadsheets for the work that has to be auditable",
-    "Patient and clinical information easier to find in one place when the team needs it",
-    "Fewer avoidable errors and less duplicate data entry in daily routines",
+  roleSummary: [
+    "I led technical presentations and product demonstrations to CEOs, CFOs, doctors, and business owners, showcasing how the system supports healthcare operations.",
+    "I developed automated test scripts using Selenium and TestNG, improving test coverage and reducing manual testing effort.",
+    "I implemented CI/CD pipelines with Jenkins to enable continuous testing and faster, more reliable releases.",
+    "I conducted field deployments, training sessions, and onboarding for healthcare clients, improving system adoption and usability.",
+    "I created user manuals and support documentation, strengthening both client understanding and internal support processes.",
   ],
 } as const;
 
@@ -253,7 +263,7 @@ export const healthcareDeployments = {
 export const experienceTimeline = [
   {
     id: "maybeach",
-    organization: "Maybeach Technologies",
+    organization: "Maybeach Technologies Limited",
     location: "Abuja, Nigeria",
     periodLabel: "Sep 2019 – Jan 2021",
     role: "Project Manager & Systems Analyst",
@@ -273,12 +283,12 @@ export const experienceTimeline = [
     role: "System Analyst / Deployment Engineer",
     eyebrow: healthcareDeployments.sectionTitle,
     intro: healthcareDeployments.intro,
-    hospitalsTitle: "Hospitals & clients",
-    hospitals: [...healthcareDeployments.hospitals],
-    deliveryTitle: "Delivery scope",
-    deliveryBullets: [...healthcareDeployments.deliveryHighlights],
-    impactTitle: "Impact",
-    impactBullets: [...healthcareDeployments.impact],
+    projectsSectionTitle: "Projects",
+    programs: healthcareDeployments.programs.map(
+      (p) => `${p.shortName} — ${p.name}`
+    ),
+    roleSectionTitle: "Key Roles & Contributions",
+    roleBullets: [...healthcareDeployments.roleSummary],
   },
   {
     id: "northsnow",

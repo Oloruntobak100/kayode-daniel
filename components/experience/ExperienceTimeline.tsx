@@ -113,34 +113,29 @@ function TimelineCardBody({ entry }: { entry: TimelineEntry }) {
           {entry.eyebrow}
         </p>
         <p className="mt-3 text-sm leading-relaxed text-muted">{entry.intro}</p>
-        <div className="mt-8">
+        <div className="mt-6 space-y-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.hospitalsTitle}
+            {entry.projectsSectionTitle}
           </p>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {entry.hospitals.map((h) => (
-              <li key={h}>
-                <span className="inline-block rounded-full border border-black/10 bg-white/90 px-3 py-1 text-xs text-foreground/90 shadow-soft backdrop-blur-sm">
-                  {h}
-                </span>
-              </li>
+          <div className="space-y-4">
+            {entry.programs.map((line) => (
+              <p
+                key={line}
+                className="border-l border-black/10 pl-3 text-sm leading-snug text-foreground/90"
+              >
+                <span className="font-semibold text-foreground">{line.split(" — ")[0]}</span>
+                <span className="text-muted"> — </span>
+                <span>{line.split(" — ").slice(1).join(" — ")}</span>
+              </p>
             ))}
-          </ul>
-        </div>
-        <div className="mt-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.deliveryTitle}
-          </p>
-          <div className="mt-4">
-            <ChevronBulletList items={entry.deliveryBullets} />
           </div>
         </div>
-        <div className="mt-8 rounded-2xl border border-black/10 bg-neutral-50/90 p-4 shadow-soft">
+        <div className="mt-8">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {entry.impactTitle}
+            {entry.roleSectionTitle}
           </p>
-          <div className="mt-3">
-            <ChevronBulletList items={entry.impactBullets} />
+          <div className="mt-4">
+            <ChevronBulletList items={entry.roleBullets} />
           </div>
         </div>
       </>
