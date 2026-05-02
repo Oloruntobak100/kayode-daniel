@@ -20,7 +20,7 @@ export async function PATCH(request: Request, context: Ctx) {
     description?: string;
     content_image_url?: string | null;
     category_id?: string;
-    image_url?: string;
+    image_url?: string | null;
     sort_order?: number;
   };
 
@@ -52,11 +52,7 @@ export async function PATCH(request: Request, context: Ctx) {
     patch.category_id = body.category_id;
   }
   if (body.image_url !== undefined) {
-    const u = body.image_url.trim();
-    if (!u) {
-      return NextResponse.json({ error: "image_url cannot be empty" }, { status: 400 });
-    }
-    patch.image_url = u;
+    patch.image_url = body.image_url?.trim() || null;
   }
   if (body.sort_order !== undefined) patch.sort_order = body.sort_order;
 

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
+import { SHOWCASE_CARD_FALLBACK_SRC } from "@/lib/showcase-card-image";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -45,7 +46,8 @@ export default function ShowcaseProjectCard({
     trimmed.length > 140 ? `${trimmed.slice(0, 140)}…` : trimmed;
 
   const trimmedContent = contentImageUrl?.trim() ?? "";
-  const trimmedThumb = imageSrc.trim();
+  const cardThumbSrc = imageSrc.trim() || SHOWCASE_CARD_FALLBACK_SRC;
+  const trimmedThumb = cardThumbSrc.trim();
   const detailSrc =
     trimmedContent && trimmedContent !== trimmedThumb ? trimmedContent : null;
 
@@ -68,7 +70,7 @@ export default function ShowcaseProjectCard({
         >
           <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
             <Image
-              src={imageSrc}
+              src={cardThumbSrc}
               alt={`${title} preview`}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 380px"

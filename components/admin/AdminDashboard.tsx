@@ -11,7 +11,7 @@ type AdminProject = {
   description: string;
   content_image_url: string | null;
   category_id: string;
-  image_url: string;
+  image_url: string | null;
   sort_order: number;
 };
 
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
       description: p.description,
       content_image_url: p.content_image_url ?? "",
       category_id: p.category_id,
-      image_url: p.image_url,
+      image_url: p.image_url ?? "",
       sort_order: p.sort_order,
     });
     setMessage(null);
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
         description: form.description.trim(),
         content_image_url: form.content_image_url.trim() || null,
         category_id: form.category_id,
-        image_url: form.image_url.trim() || undefined,
+        image_url: form.image_url.trim() || null,
         sort_order: form.sort_order,
       };
 
@@ -388,14 +388,14 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <label className="block space-y-1.5">
                 <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                  Card thumbnail URL
+                  Card thumbnail URL (optional)
                 </span>
                 <input
                   value={form.image_url}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, image_url: e.target.value }))
                   }
-                  placeholder="Paste an image URL"
+                  placeholder="Paste a URL or leave empty for default"
                   className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
                 />
               </label>

@@ -1,4 +1,5 @@
 import type { ProjectPortfolioCategoryId } from "@/lib/portfolio-source";
+import { SHOWCASE_CARD_FALLBACK_SRC } from "@/lib/showcase-card-image";
 
 /** Unified shape for Projects UI — from Supabase or static fallback */
 export type ShowcaseProject = {
@@ -17,17 +18,18 @@ export type PortfolioProjectRow = {
   description: string | null;
   content_image_url: string | null;
   category_id: string;
-  image_url: string;
+  image_url: string | null;
   sort_order: number | null;
 };
 
 export function rowToShowcase(row: PortfolioProjectRow): ShowcaseProject {
+  const thumb = row.image_url?.trim();
   return {
     id: row.id,
     title: row.title,
     description: row.description ?? "",
     categoryId: row.category_id as ShowcaseProject["categoryId"],
-    imageSrc: row.image_url,
+    imageSrc: thumb || SHOWCASE_CARD_FALLBACK_SRC,
     contentImageUrl: row.content_image_url,
   };
 }

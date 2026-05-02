@@ -3,9 +3,6 @@ import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
 import { rowToShowcase } from "@/lib/showcase-project";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-const PLACEHOLDER_IMAGE =
-  "https://picsum.photos/seed/portfolio-placeholder/800/520";
-
 export async function GET() {
   const supabase = createServiceRoleClient();
   if (!supabase) {
@@ -54,7 +51,7 @@ export async function POST(request: Request) {
     description?: string;
     content_image_url?: string | null;
     category_id?: string;
-    image_url?: string;
+    image_url?: string | null;
     sort_order?: number;
   };
 
@@ -74,7 +71,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid category_id" }, { status: 400 });
   }
 
-  const image_url = body.image_url?.trim() || PLACEHOLDER_IMAGE;
+  const image_url = body.image_url?.trim() || null;
 
   const { data, error } = await supabase
     .from("portfolio_projects")
