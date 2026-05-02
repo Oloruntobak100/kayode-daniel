@@ -1,7 +1,12 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
 import { rowToShowcase } from "@/lib/showcase-project";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+
+function revalidatePortfolioPages() {
+  revalidatePath("/", "layout");
+}
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -73,6 +78,8 @@ export async function PATCH(request: Request, context: Ctx) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  revalidatePortfolioPages();
+
   return NextResponse.json({
     project: rowToShowcase({
       id: data.id,
@@ -101,6 +108,8 @@ export async function DELETE(_request: Request, context: Ctx) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  revalidatePortfolioPages();
 
   return NextResponse.json({ ok: true });
 }

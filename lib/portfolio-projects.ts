@@ -43,7 +43,7 @@ export async function getPortfolioShowcaseProjectsWithMeta(): Promise<{
       "id, title, description, content_image_url, category_id, image_url, sort_order"
     )
     .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: true });
+    .order("id", { ascending: true });
 
   if (error) {
     return { projects: staticFallback(), source: "static" };

@@ -1,7 +1,12 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
 import { rowToShowcase } from "@/lib/showcase-project";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+
+function revalidatePortfolioPages() {
+  revalidatePath("/", "layout");
+}
 
 export async function GET() {
   const supabase = createServiceRoleClient();
@@ -18,7 +23,7 @@ export async function GET() {
       "id, title, description, content_image_url, category_id, image_url, sort_order, created_at, updated_at"
     )
     .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: true });
+    .order("id", { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -91,6 +96,8 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  revalidatePortfolioPages();
 
   return NextResponse.json({
     project: rowToShowcase({

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ShowcaseProjectCard from "@/components/ui/ShowcaseProjectCard";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import {
@@ -28,18 +28,48 @@ export default function Projects({
   showcaseProjects,
   portfolioSource,
 }: Props) {
+  const [items, setItems] = useState(showcaseProjects);
+  const [source, setSource] = useState(portfolioSource);
+
+  useEffect(() => {
+    setItems(showcaseProjects);
+    setSource(portfolioSource);
+  }, [showcaseProjects, portfolioSource]);
+
+  /** Fresh fetch when Projects mounts — avoids stale RSC/cache after admin saves. */
+  useEffect(() => {
+    let cancelled = false;
+    async function refresh() {
+      try {
+        const res = await fetch("/api/projects", { cache: "no-store" });
+        if (!res.ok || cancelled) return;
+        const json = (await res.json()) as {
+          projects?: ShowcaseProject[];
+          source?: PortfolioProjectsSource;
+        };
+        if (cancelled) return;
+        if (json.projects) setItems(json.projects);
+        if (json.source) setSource(json.source);
+      } catch {
+        /* keep SSR props */
+      }
+    }
+    void refresh();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const [activeFilter, setActiveFilter] =
     useState<ProjectPortfolioCategoryId>("all");
 
   const filtered = useMemo(() => {
-    if (activeFilter === "all") return [...showcaseProjects];
-    return showcaseProjects.filter((p) => p.categoryId === activeFilter);
-  }, [activeFilter, showcaseProjects]);
+    if (activeFilter === "all") return [...items];
+    return items.filter((p) => p.categoryId === activeFilter);
+  }, [activeFilter, items]);
 
-  const isLive =
-    portfolioSource === "supabase" && showcaseProjects.length > 0;
-  const isEmptyDb =
-    portfolioSource === "supabase" && showcaseProjects.length === 0;
+  const isLive = source === "supabase" && items.length > 0;
+  const isEmptyDb = source === "supabase" && items.length === 0;
 
   return (
     <motion.div
