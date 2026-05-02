@@ -65,7 +65,7 @@ export default function Projects({
           {isLive ? (
             <>
               Work samples and walkthroughs — filter by focus area. Open a card
-              for details and video.
+              for details and images.
             </>
           ) : isEmptyDb ? (
             <>
@@ -121,7 +121,7 @@ export default function Projects({
             categoryLabel={categoryLabelFor(p.categoryId)}
             imageSrc={p.imageSrc}
             description={p.description}
-            youtubeUrl={p.youtubeUrl}
+            contentImageUrl={p.contentImageUrl}
           />
         ))}
       </motion.div>

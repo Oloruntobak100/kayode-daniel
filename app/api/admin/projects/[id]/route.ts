@@ -18,7 +18,7 @@ export async function PATCH(request: Request, context: Ctx) {
   let body: {
     title?: string;
     description?: string;
-    youtube_url?: string | null;
+    content_image_url?: string | null;
     category_id?: string;
     image_url?: string;
     sort_order?: number;
@@ -42,8 +42,8 @@ export async function PATCH(request: Request, context: Ctx) {
     patch.title = t;
   }
   if (body.description !== undefined) patch.description = body.description ?? "";
-  if (body.youtube_url !== undefined) {
-    patch.youtube_url = body.youtube_url?.trim() || null;
+  if (body.content_image_url !== undefined) {
+    patch.content_image_url = body.content_image_url?.trim() || null;
   }
   if (body.category_id !== undefined) {
     if (!isValidShowcaseCategoryId(body.category_id)) {
@@ -65,7 +65,7 @@ export async function PATCH(request: Request, context: Ctx) {
     .update(patch)
     .eq("id", id)
     .select(
-      "id, title, description, youtube_url, category_id, image_url, sort_order"
+      "id, title, description, content_image_url, category_id, image_url, sort_order"
     )
     .single();
 
@@ -82,7 +82,7 @@ export async function PATCH(request: Request, context: Ctx) {
       id: data.id,
       title: data.title,
       description: data.description,
-      youtube_url: data.youtube_url,
+      content_image_url: data.content_image_url,
       category_id: data.category_id,
       image_url: data.image_url,
       sort_order: data.sort_order,

@@ -18,7 +18,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("portfolio_projects")
     .select(
-      "id, title, description, youtube_url, category_id, image_url, sort_order, created_at, updated_at"
+      "id, title, description, content_image_url, category_id, image_url, sort_order, created_at, updated_at"
     )
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
@@ -31,7 +31,7 @@ export async function GET() {
     id: row.id,
     title: row.title,
     description: row.description ?? "",
-    youtube_url: row.youtube_url,
+    content_image_url: row.content_image_url,
     category_id: row.category_id,
     image_url: row.image_url,
     sort_order: row.sort_order ?? 0,
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   let body: {
     title?: string;
     description?: string;
-    youtube_url?: string | null;
+    content_image_url?: string | null;
     category_id?: string;
     image_url?: string;
     sort_order?: number;
@@ -81,13 +81,13 @@ export async function POST(request: Request) {
     .insert({
       title,
       description: body.description?.trim() ?? "",
-      youtube_url: body.youtube_url?.trim() || null,
+      content_image_url: body.content_image_url?.trim() || null,
       category_id,
       image_url,
       sort_order: body.sort_order ?? 0,
     })
     .select(
-      "id, title, description, youtube_url, category_id, image_url, sort_order"
+      "id, title, description, content_image_url, category_id, image_url, sort_order"
     )
     .single();
 
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
       id: data.id,
       title: data.title,
       description: data.description,
-      youtube_url: data.youtube_url,
+      content_image_url: data.content_image_url,
       category_id: data.category_id,
       image_url: data.image_url,
       sort_order: data.sort_order,

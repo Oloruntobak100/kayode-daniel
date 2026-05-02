@@ -5,7 +5,7 @@ create table if not exists public.portfolio_projects (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   description text not null default '',
-  youtube_url text,
+  content_image_url text,
   category_id text not null,
   image_url text not null,
   sort_order integer not null default 0,

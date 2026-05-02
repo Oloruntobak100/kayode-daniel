@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ExternalLink } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
-import { youtubeVideoIdFromUrl } from "@/lib/youtube";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -11,7 +9,7 @@ type Props = {
   categoryLabel: string;
   imageSrc: string;
   description?: string;
-  youtubeUrl?: string | null;
+  contentImageUrl?: string | null;
 };
 
 export default function ShowcaseProjectCard({
@@ -19,10 +17,9 @@ export default function ShowcaseProjectCard({
   categoryLabel,
   imageSrc,
   description,
-  youtubeUrl,
+  contentImageUrl,
 }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const youtubeId = youtubeVideoIdFromUrl(youtubeUrl ?? undefined);
 
   const openDialog = useCallback(() => {
     dialogRef.current?.showModal();
@@ -46,6 +43,14 @@ export default function ShowcaseProjectCard({
   const trimmed = description?.trim() ?? "";
   const excerpt =
     trimmed.length > 140 ? `${trimmed.slice(0, 140)}…` : trimmed;
+
+  const trimmedContent = contentImageUrl?.trim() ?? "";
+  const trimmedThumb = imageSrc.trim();
+  const detailSrc =
+    trimmedContent && trimmedContent !== trimmedThumb ? trimmedContent : null;
+
+  const hasDialogBody =
+    Boolean(detailSrc) || Boolean(description?.trim());
 
   return (
     <>
@@ -84,22 +89,6 @@ export default function ShowcaseProjectCard({
             ) : null}
           </div>
         </button>
-
-        {youtubeUrl ? (
-          <div className="border-t border-black/[0.06] px-4 pb-4 pt-2 md:px-5">
-            <a
-              href={youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-cursor-hover
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Watch on YouTube
-              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-            </a>
-          </div>
-        ) : null}
       </article>
 
       <dialog
@@ -120,14 +109,13 @@ export default function ShowcaseProjectCard({
             </button>
           </div>
           <div className="space-y-4 p-4">
-            {youtubeId ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
-                <iframe
-                  title={`${title} video`}
-                  src={`https://www.youtube.com/embed/${youtubeId}`}
-                  className="absolute inset-0 h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
+            {detailSrc ? (
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-100">
+                {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary URLs from Supabase or uploads */}
+                <img
+                  src={detailSrc}
+                  alt=""
+                  className="h-full w-full object-contain"
                 />
               </div>
             ) : null}
@@ -135,11 +123,10 @@ export default function ShowcaseProjectCard({
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
                 {description.trim()}
               </p>
-            ) : (
-              !youtubeId && (
-                <p className="text-sm text-muted">No additional details yet.</p>
-              )
-            )}
+            ) : null}
+            {!hasDialogBody ? (
+              <p className="text-sm text-muted">No additional details yet.</p>
+            ) : null}
           </div>
         </div>
       </dialog>

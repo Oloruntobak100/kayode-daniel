@@ -1,16 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { projectPortfolioCategories } from "@/lib/portfolio-source";
 import { showcaseCategoryIds } from "@/lib/portfolio-categories";
-import { youtubeThumbnailUrl, youtubeVideoIdFromUrl } from "@/lib/youtube";
 import { cn } from "@/lib/utils";
 
 type AdminProject = {
   id: string;
   title: string;
   description: string;
-  youtube_url: string | null;
+  content_image_url: string | null;
   category_id: string;
   image_url: string;
   sort_order: number;
@@ -20,7 +19,7 @@ type FormState = {
   id: string | null;
   title: string;
   description: string;
-  youtube_url: string;
+  content_image_url: string;
   category_id: string;
   image_url: string;
   sort_order: number;
@@ -30,7 +29,7 @@ const emptyForm = (): FormState => ({
   id: null,
   title: "",
   description: "",
-  youtube_url: "",
+  content_image_url: "",
   category_id: showcaseCategoryIds[0] ?? "saas-web-app",
   image_url: "",
   sort_order: 0,
@@ -43,7 +42,9 @@ export default function AdminDashboard() {
   const [form, setForm] = useState<FormState>(emptyForm());
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [uploadingContent, setUploadingContent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const contentFileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -75,7 +76,7 @@ export default function AdminDashboard() {
       id: p.id,
       title: p.title,
       description: p.description,
-      youtube_url: p.youtube_url ?? "",
+      content_image_url: p.content_image_url ?? "",
       category_id: p.category_id,
       image_url: p.image_url,
       sort_order: p.sort_order,
@@ -86,6 +87,32 @@ export default function AdminDashboard() {
   function clearForm() {
     setForm(emptyForm());
     setMessage(null);
+    if (contentFileRef.current) contentFileRef.current.value = "";
+  }
+
+  async function handleUploadContentImage(file: File) {
+    setUploadingContent(true);
+    setMessage(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload-content-image", {
+        method: "POST",
+        body: fd,
+      });
+      const json = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok) {
+        setMessage(json.error ?? "Upload failed");
+        return;
+      }
+      if (json.url) {
+        setForm((f) => ({ ...f, content_image_url: json.url! }));
+        setMessage("Detail image uploaded — save to persist.");
+      }
+    } finally {
+      setUploadingContent(false);
+      if (contentFileRef.current) contentFileRef.current.value = "";
+    }
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -96,7 +123,7 @@ export default function AdminDashboard() {
       const payload = {
         title: form.title.trim(),
         description: form.description.trim(),
-        youtube_url: form.youtube_url.trim() || null,
+        content_image_url: form.content_image_url.trim() || null,
         category_id: form.category_id,
         image_url: form.image_url.trim() || undefined,
         sort_order: form.sort_order,
@@ -142,13 +169,13 @@ export default function AdminDashboard() {
             description: string;
             categoryId: string;
             imageSrc: string;
-            youtubeUrl: string | null;
+            contentImageUrl: string | null;
           };
           setForm({
             id: row.id,
             title: row.title,
             description: row.description,
-            youtube_url: row.youtubeUrl ?? "",
+            content_image_url: row.contentImageUrl ?? "",
             category_id: row.categoryId,
             image_url: row.imageSrc,
             sort_order: form.sort_order,
@@ -224,19 +251,6 @@ export default function AdminDashboard() {
     } finally {
       setGenerating(false);
     }
-  }
-
-  function applyYoutubeThumbnail() {
-    const id = youtubeVideoIdFromUrl(form.youtube_url);
-    if (!id) {
-      setMessage("Add a valid YouTube URL first.");
-      return;
-    }
-    setForm((f) => ({
-      ...f,
-      image_url: youtubeThumbnailUrl(id),
-    }));
-    setMessage("YouTube thumbnail URL applied — save to persist.");
   }
 
   const categoryOptions = projectPortfolioCategories.filter((c) => c.id !== "all");
@@ -361,20 +375,46 @@ export default function AdminDashboard() {
               </select>
             </label>
 
-            <label className="block space-y-1.5">
+            <div className="space-y-2 rounded-xl border border-black/10 bg-white/40 p-4">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                YouTube URL
+                Detail image (optional)
               </span>
+              <p className="text-xs text-muted">
+                Shown in the project dialog. Upload to Storage or paste a URL.
+              </p>
               <input
-                type="url"
-                placeholder="https://www.youtube.com/watch?v=…"
-                value={form.youtube_url}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, youtube_url: e.target.value }))
-                }
-                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
+                ref={contentFileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="block w-full text-sm text-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-accent/15 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-foreground"
+                disabled={uploadingContent || saving}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleUploadContentImage(file);
+                }}
               />
-            </label>
+              <label className="mt-2 block space-y-1.5">
+                <span className="sr-only">Detail image URL</span>
+                <input
+                  value={form.content_image_url}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, content_image_url: e.target.value }))
+                  }
+                  placeholder="https://… or use upload above"
+                  className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
+                />
+              </label>
+              {form.content_image_url ? (
+                <div className="relative mt-2 aspect-video max-h-40 overflow-hidden rounded-lg border border-black/10 bg-neutral-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={form.content_image_url}
+                    alt="Detail preview"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              ) : null}
+            </div>
 
             <label className="block space-y-1.5">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -393,35 +433,37 @@ export default function AdminDashboard() {
               />
             </label>
 
-            <label className="block space-y-1.5">
-              <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                Image URL
-              </span>
-              <input
-                value={form.image_url}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, image_url: e.target.value }))
-                }
-                placeholder="Generated or paste a URL"
-                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
-              />
-            </label>
-
-            {form.image_url ? (
-              <div className="relative aspect-[16/10] max-h-48 overflow-hidden rounded-xl border border-black/10 bg-neutral-100">
-                {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary preview URLs */}
-                <img
-                  src={form.image_url}
-                  alt="Preview"
-                  className="h-full w-full object-cover"
+            <div className="space-y-2">
+              <label className="block space-y-1.5">
+                <span className="text-xs font-medium uppercase tracking-wide text-muted">
+                  Card thumbnail URL
+                </span>
+                <input
+                  value={form.image_url}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, image_url: e.target.value }))
+                  }
+                  placeholder="Generate with Fal or paste a URL"
+                  className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
                 />
-              </div>
-            ) : null}
+              </label>
+
+              {form.image_url ? (
+                <div className="relative aspect-[16/10] max-h-48 overflow-hidden rounded-xl border border-black/10 bg-neutral-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={form.image_url}
+                    alt="Thumbnail preview"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : null}
+            </div>
 
             <div className="flex flex-wrap gap-2">
               <button
                 type="submit"
-                disabled={saving}
+                disabled={saving || uploadingContent}
                 className="rounded-pill bg-accent px-4 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95 disabled:opacity-50"
               >
                 {saving ? "Saving…" : form.id ? "Save changes" : "Create project"}
@@ -429,24 +471,16 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => void handleGenerateThumbnail()}
-                disabled={generating || saving}
+                disabled={generating || saving || uploadingContent}
                 className="rounded-pill border border-black/15 bg-white/80 px-4 py-2 text-sm font-medium hover:bg-white disabled:opacity-50"
               >
                 {generating ? "Generating…" : "Generate thumbnail (Fal)"}
-              </button>
-              <button
-                type="button"
-                onClick={applyYoutubeThumbnail}
-                disabled={saving}
-                className="rounded-pill border border-black/15 bg-white/80 px-4 py-2 text-sm font-medium hover:bg-white disabled:opacity-50"
-              >
-                Use YouTube thumbnail
               </button>
               {form.id ? (
                 <button
                   type="button"
                   onClick={() => void handleDelete()}
-                  disabled={saving}
+                  disabled={saving || uploadingContent}
                   className="rounded-pill border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100 disabled:opacity-50"
                 >
                   Delete

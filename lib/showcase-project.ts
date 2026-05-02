@@ -7,14 +7,15 @@ export type ShowcaseProject = {
   description: string;
   categoryId: ProjectPortfolioCategoryId;
   imageSrc: string;
-  youtubeUrl: string | null;
+  /** Optional detail / gallery image shown in the project dialog */
+  contentImageUrl: string | null;
 };
 
 export type PortfolioProjectRow = {
   id: string;
   title: string;
   description: string | null;
-  youtube_url: string | null;
+  content_image_url: string | null;
   category_id: string;
   image_url: string;
   sort_order: number | null;
@@ -27,6 +28,6 @@ export function rowToShowcase(row: PortfolioProjectRow): ShowcaseProject {
     description: row.description ?? "",
     categoryId: row.category_id as ShowcaseProject["categoryId"],
     imageSrc: row.image_url,
-    youtubeUrl: row.youtube_url,
+    contentImageUrl: row.content_image_url,
   };
 }
