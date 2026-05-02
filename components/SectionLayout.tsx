@@ -13,18 +13,24 @@ import Skills from "@/components/sections/Skills";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { fadeSlideUp, sectionMarqueeSafe } from "@/lib/animations";
 import type { SectionId } from "@/lib/content";
+import type { PortfolioProjectsSource } from "@/lib/portfolio-projects";
+import type { ShowcaseProject } from "@/lib/showcase-project";
 import { cn } from "@/lib/utils";
 
 type Props = {
   activeSection: SectionId;
   onSelectSection: (id: SectionId) => void;
   onBackHome: () => void;
+  showcaseProjects: ShowcaseProject[];
+  portfolioSource: PortfolioProjectsSource;
 };
 
 export default function SectionLayout({
   activeSection,
   onSelectSection,
   onBackHome,
+  showcaseProjects,
+  portfolioSource,
 }: Props) {
   /** Full-width content (no portrait column) */
   const hideAside =
@@ -39,7 +45,12 @@ export default function SectionLayout({
       case "experience":
         return <Experience />;
       case "projects":
-        return <Projects />;
+        return (
+          <Projects
+            showcaseProjects={showcaseProjects}
+            portfolioSource={portfolioSource}
+          />
+        );
       case "skills":
         return <Skills />;
       case "blog":

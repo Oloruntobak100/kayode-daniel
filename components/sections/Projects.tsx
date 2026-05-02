@@ -4,30 +4,42 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import ShowcaseProjectCard from "@/components/ui/ShowcaseProjectCard";
 import { staggerContainer, staggerItem } from "@/lib/animations";
-import type { ProjectPortfolioCategoryId } from "@/lib/portfolio-source";
 import {
-  portfolioShowcaseProjects,
   projectPortfolioCategories,
 } from "@/lib/content";
+import type { PortfolioProjectsSource } from "@/lib/portfolio-projects";
+import type { ProjectPortfolioCategoryId } from "@/lib/portfolio-source";
+import type { ShowcaseProject } from "@/lib/showcase-project";
 import { cn } from "@/lib/utils";
 
+type Props = {
+  showcaseProjects: ShowcaseProject[];
+  portfolioSource: PortfolioProjectsSource;
+};
+
 function categoryLabelFor(
-  categoryId: (typeof portfolioShowcaseProjects)[number]["categoryId"]
+  categoryId: ShowcaseProject["categoryId"]
 ): string {
   const row = projectPortfolioCategories.find((c) => c.id === categoryId);
   return row?.label ?? categoryId;
 }
 
-export default function Projects() {
+export default function Projects({
+  showcaseProjects,
+  portfolioSource,
+}: Props) {
   const [activeFilter, setActiveFilter] =
     useState<ProjectPortfolioCategoryId>("all");
 
   const filtered = useMemo(() => {
-    if (activeFilter === "all") return [...portfolioShowcaseProjects];
-    return portfolioShowcaseProjects.filter(
-      (p) => p.categoryId === activeFilter
-    );
-  }, [activeFilter]);
+    if (activeFilter === "all") return [...showcaseProjects];
+    return showcaseProjects.filter((p) => p.categoryId === activeFilter);
+  }, [activeFilter, showcaseProjects]);
+
+  const isLive =
+    portfolioSource === "supabase" && showcaseProjects.length > 0;
+  const isEmptyDb =
+    portfolioSource === "supabase" && showcaseProjects.length === 0;
 
   return (
     <motion.div
@@ -50,8 +62,22 @@ export default function Projects() {
           Selected work
         </h2>
         <p className="mt-3 max-w-xl text-muted">
-          Filter by engagement type — dummy entries for layout; swap in real assets
-          from your admin later.
+          {isLive ? (
+            <>
+              Work samples and walkthroughs — filter by focus area. Open a card
+              for details and video.
+            </>
+          ) : isEmptyDb ? (
+            <>
+              Projects will appear here once you add them in the admin (Supabase
+              connected, table empty).
+            </>
+          ) : (
+            <>
+              Filter by engagement type — placeholder entries for layout; connect
+              Supabase and the admin to replace with live projects.
+            </>
+          )}
         </p>
       </motion.div>
 
@@ -94,13 +120,16 @@ export default function Projects() {
             title={p.title}
             categoryLabel={categoryLabelFor(p.categoryId)}
             imageSrc={p.imageSrc}
+            description={p.description}
+            youtubeUrl={p.youtubeUrl}
           />
         ))}
       </motion.div>
 
       {filtered.length === 0 ? (
         <p className="mt-8 text-center text-sm text-muted">
-          Nothing in this category yet — pick another filter.
+          Nothing in this category yet — pick another filter
+          {isEmptyDb ? " or add projects in admin." : "."}
         </p>
       ) : null}
     </motion.div>
