@@ -41,7 +41,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [saving, setSaving] = useState(false);
-  const [generating, setGenerating] = useState(false);
   const [uploadingContent, setUploadingContent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const contentFileRef = useRef<HTMLInputElement>(null);
@@ -210,49 +209,6 @@ export default function AdminDashboard() {
     }
   }
 
-  async function handleGenerateThumbnail() {
-    const title = form.title.trim();
-    if (!title) {
-      setMessage("Add a title before generating a thumbnail.");
-      return;
-    }
-    setGenerating(true);
-    setMessage(null);
-    try {
-      const res = await fetch("/api/admin/generate-thumbnail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          description: form.description.trim(),
-          project_id: form.id ?? undefined,
-        }),
-      });
-      const json = (await res.json()) as {
-        image_url?: string;
-        error?: string;
-        stored?: boolean;
-        storage_error?: string;
-      };
-      if (!res.ok) {
-        setMessage(json.error ?? "Generation failed");
-        return;
-      }
-      if (json.image_url) {
-        setForm((f) => ({ ...f, image_url: json.image_url! }));
-      }
-      setMessage(
-        json.stored
-          ? "Thumbnail generated and saved to storage."
-          : json.storage_error
-            ? `Thumbnail URL ready (${json.storage_error}).`
-            : "Thumbnail generated (using Fal URL)."
-      );
-    } finally {
-      setGenerating(false);
-    }
-  }
-
   const categoryOptions = projectPortfolioCategories.filter((c) => c.id !== "all");
 
   return (
@@ -263,11 +219,7 @@ export default function AdminDashboard() {
             Portfolio projects
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Internal admin — Supabase-backed showcase. Fal uses{" "}
-            <code className="rounded bg-black/[0.06] px-1.5 py-0.5 text-xs">
-              FAL_KEY
-            </code>{" "}
-            on the server.
+            Internal admin — projects stored in Supabase.
           </p>
         </div>
         <a
@@ -443,7 +395,7 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, image_url: e.target.value }))
                   }
-                  placeholder="Generate with Fal or paste a URL"
+                  placeholder="Paste an image URL"
                   className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
                 />
               </label>
@@ -467,14 +419,6 @@ export default function AdminDashboard() {
                 className="rounded-pill bg-accent px-4 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95 disabled:opacity-50"
               >
                 {saving ? "Saving…" : form.id ? "Save changes" : "Create project"}
-              </button>
-              <button
-                type="button"
-                onClick={() => void handleGenerateThumbnail()}
-                disabled={generating || saving || uploadingContent}
-                className="rounded-pill border border-black/15 bg-white/80 px-4 py-2 text-sm font-medium hover:bg-white disabled:opacity-50"
-              >
-                {generating ? "Generating…" : "Generate thumbnail (Fal)"}
               </button>
               {form.id ? (
                 <button
