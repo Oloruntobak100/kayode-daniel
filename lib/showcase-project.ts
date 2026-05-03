@@ -24,12 +24,15 @@ export type PortfolioProjectRow = {
 
 export function rowToShowcase(row: PortfolioProjectRow): ShowcaseProject {
   const thumb = row.image_url?.trim();
+  const content = row.content_image_url?.trim();
+  /** No separate “thumbnail” in admin: grid uses detail image, then local fallback. */
+  const imageSrc = thumb || content || SHOWCASE_CARD_FALLBACK_SRC;
   return {
     id: row.id,
     title: row.title,
     description: row.description ?? "",
     categoryId: row.category_id as ShowcaseProject["categoryId"],
-    imageSrc: thumb || SHOWCASE_CARD_FALLBACK_SRC,
+    imageSrc,
     contentImageUrl: row.content_image_url,
   };
 }

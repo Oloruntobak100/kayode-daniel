@@ -1,7 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
-import { rowToShowcase } from "@/lib/showcase-project";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
 function revalidatePortfolioPages() {
@@ -80,17 +79,7 @@ export async function PATCH(request: Request, context: Ctx) {
 
   revalidatePortfolioPages();
 
-  return NextResponse.json({
-    project: rowToShowcase({
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      content_image_url: data.content_image_url,
-      category_id: data.category_id,
-      image_url: data.image_url,
-      sort_order: data.sort_order,
-    }),
-  });
+  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(_request: Request, context: Ctx) {

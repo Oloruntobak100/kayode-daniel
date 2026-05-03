@@ -21,7 +21,6 @@ type FormState = {
   description: string;
   content_image_url: string;
   category_id: string;
-  image_url: string;
   sort_order: number;
 };
 
@@ -31,7 +30,6 @@ const emptyForm = (): FormState => ({
   description: "",
   content_image_url: "",
   category_id: showcaseCategoryIds[0] ?? "saas-web-app",
-  image_url: "",
   sort_order: 0,
 });
 
@@ -77,7 +75,6 @@ export default function AdminDashboard() {
       description: p.description,
       content_image_url: p.content_image_url ?? "",
       category_id: p.category_id,
-      image_url: p.image_url ?? "",
       sort_order: p.sort_order,
     });
     setMessage(null);
@@ -124,7 +121,8 @@ export default function AdminDashboard() {
         description: form.description.trim(),
         content_image_url: form.content_image_url.trim() || null,
         category_id: form.category_id,
-        image_url: form.image_url.trim() || null,
+        /** Card imagery uses the detail image + site fallback only — no separate thumbnail column. */
+        image_url: null as string | null,
         sort_order: form.sort_order,
       };
 
@@ -160,27 +158,10 @@ export default function AdminDashboard() {
           setSaving(false);
           return;
         }
-        setMessage("Created.");
-        if (json.project) {
-          const row = json.project as {
-            id: string;
-            title: string;
-            description: string;
-            categoryId: string;
-            imageSrc: string;
-            contentImageUrl: string | null;
-          };
-          setForm({
-            id: row.id,
-            title: row.title,
-            description: row.description,
-            content_image_url: row.contentImageUrl ?? "",
-            category_id: row.categoryId,
-            image_url: row.imageSrc,
-            sort_order: form.sort_order,
-          });
-        }
         await load();
+        setForm(emptyForm());
+        if (contentFileRef.current) contentFileRef.current.value = "";
+        setMessage("Created.");
       }
     } finally {
       setSaving(false);
@@ -384,33 +365,6 @@ export default function AdminDashboard() {
                 className="w-full max-w-[12rem] rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
               />
             </label>
-
-            <div className="space-y-2">
-              <label className="block space-y-1.5">
-                <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                  Card thumbnail URL (optional)
-                </span>
-                <input
-                  value={form.image_url}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, image_url: e.target.value }))
-                  }
-                  placeholder="Paste a URL or leave empty for default"
-                  className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
-                />
-              </label>
-
-              {form.image_url ? (
-                <div className="relative aspect-[16/10] max-h-48 overflow-hidden rounded-xl border border-black/10 bg-neutral-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={form.image_url}
-                    alt="Thumbnail preview"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ) : null}
-            </div>
 
             <div className="flex flex-wrap gap-2">
               <button
