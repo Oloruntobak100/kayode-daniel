@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock3 } from "lucide-react";
+import { Clock3, House } from "lucide-react";
 import type { Metadata } from "next";
 import BlogMarkdown from "@/components/blog/BlogMarkdown";
 import { getPublishedPostBySlug } from "@/lib/blog";
@@ -65,10 +65,11 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="mx-auto max-w-content px-4 py-10 pb-24 pt-[calc(5rem+env(safe-area-inset-top))] sm:px-6 md:py-14">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
+          aria-label="Kayode Daniel — home"
+          title="Kayode Daniel — home"
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-black/10 bg-white/60 text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4 text-accent" aria-hidden />
-          Get to know Kayode Daniel
+          <House className="h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
         </Link>
 
         <article className="mt-10">
