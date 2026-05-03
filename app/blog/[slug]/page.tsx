@@ -65,11 +65,12 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="mx-auto max-w-content px-4 py-10 pb-24 pt-[calc(5rem+env(safe-area-inset-top))] sm:px-6 md:py-14">
         <Link
           href="/"
-          aria-label="Kayode Daniel — home"
-          title="Kayode Daniel — home"
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-black/10 bg-white/60 text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
+          aria-label="Kayode Daniel — portfolio home"
+          title="Kayode Daniel — portfolio home"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-black/10 bg-white/60 px-3 py-2 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
         >
-          <House className="h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
+          <House className="h-5 w-5 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+          <span>Kayode Daniel</span>
         </Link>
 
         <article className="mt-10">
