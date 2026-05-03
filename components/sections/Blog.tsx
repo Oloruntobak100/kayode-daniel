@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -89,10 +90,22 @@ export default function Blog({ initialPosts, blogSource }: Props) {
             <Link
               href={`/blog/${post.slug}`}
               className={cn(
-                "group block rounded-2xl border border-black/10 bg-white/70 p-6 shadow-soft backdrop-blur-md transition",
+                "group block overflow-hidden rounded-2xl border border-black/10 bg-white/70 shadow-soft backdrop-blur-md transition",
                 "hover:border-accent/25 hover:shadow-glass"
               )}
             >
+              {post.thumbnailUrl ? (
+                <div className="relative aspect-[16/9] w-full border-b border-black/5 bg-black/5">
+                  <Image
+                    src={post.thumbnailUrl}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 42rem"
+                  />
+                </div>
+              ) : null}
+              <div className="p-6">
               <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
                 {post.publishedAt ? (
                   <time dateTime={post.publishedAt}>
@@ -119,6 +132,7 @@ export default function Blog({ initialPosts, blogSource }: Props) {
               <span className="mt-4 inline-block text-sm font-medium text-accent opacity-0 transition group-hover:opacity-100">
                 Read article →
               </span>
+              </div>
             </Link>
           </motion.article>
         ))}

@@ -36,6 +36,7 @@ export async function PATCH(request: Request, context: Ctx) {
     reading_time_minutes?: number | null;
     published?: boolean;
     published_at?: string | null;
+    thumbnail_url?: string | null;
   };
 
   try {
@@ -72,6 +73,9 @@ export async function PATCH(request: Request, context: Ctx) {
   }
   if (body.published !== undefined) {
     patch.published = Boolean(body.published);
+  }
+  if (body.thumbnail_url !== undefined) {
+    patch.thumbnail_url = body.thumbnail_url?.trim() || null;
   }
   if (body.published_at !== undefined) {
     const raw = body.published_at?.trim();

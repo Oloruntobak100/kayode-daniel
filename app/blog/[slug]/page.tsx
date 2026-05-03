@@ -1,9 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock3 } from "lucide-react";
 import type { Metadata } from "next";
 import BlogMarkdown from "@/components/blog/BlogMarkdown";
 import { getPublishedPostBySlug } from "@/lib/blog";
+import { cn } from "@/lib/utils";
 
 type Props = { params: { slug: string } };
 
@@ -23,6 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = post.title;
   const description = post.excerpt ?? title;
   const canonical = siteUrl() ? `${siteUrl()}/blog/${slug}` : undefined;
+  const ogImage =
+    post.thumbnailUrl != null ? [{ url: post.thumbnailUrl }] : undefined;
   return {
     title: `${title} — Kayode Daniel`,
     description,
@@ -31,6 +35,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "article",
       url: canonical,
+      images: ogImage,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: post.thumbnailUrl != null ? [post.thumbnailUrl] : undefined,
     },
   };
 }
@@ -64,7 +75,24 @@ export default async function BlogPostPage({ params }: Props) {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
             Writing
           </p>
-          <h1 className="font-display mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+          {post.thumbnailUrl ? (
+            <div className="relative mt-6 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-black/8 bg-black/5">
+              <Image
+                src={post.thumbnailUrl}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, min(896px, 100vw)"
+              />
+            </div>
+          ) : null}
+          <h1
+            className={cn(
+              "font-display text-3xl font-semibold tracking-tight sm:text-4xl",
+              post.thumbnailUrl ? "mt-8" : "mt-3"
+            )}
+          >
             {post.title}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">

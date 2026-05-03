@@ -10,6 +10,7 @@ export type BlogPostRow = {
   reading_time_minutes: number | null;
   published: boolean;
   published_at: string | null;
+  thumbnail_url: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -21,6 +22,7 @@ export type BlogListItem = {
   excerpt: string | null;
   readingTimeMinutes: number | null;
   publishedAt: string | null;
+  thumbnailUrl: string | null;
 };
 
 function mapListRow(row: {
@@ -29,6 +31,7 @@ function mapListRow(row: {
   excerpt: string | null;
   reading_time_minutes: number | null;
   published_at: string | null;
+  thumbnail_url: string | null;
 }): BlogListItem {
   return {
     slug: row.slug,
@@ -36,6 +39,7 @@ function mapListRow(row: {
     excerpt: row.excerpt,
     readingTimeMinutes: row.reading_time_minutes,
     publishedAt: row.published_at,
+    thumbnailUrl: row.thumbnail_url,
   };
 }
 
@@ -46,6 +50,7 @@ function staticBlogList(): BlogListItem[] {
     excerpt: p.excerpt,
     readingTimeMinutes: p.readingTimeMinutes,
     publishedAt: p.date,
+    thumbnailUrl: null,
   }));
 }
 
@@ -63,7 +68,9 @@ export async function getPublishedBlogListWithMeta(): Promise<{
 
   const { data, error } = await supabase
     .from("blog_posts")
-    .select("slug, title, excerpt, reading_time_minutes, published_at")
+    .select(
+      "slug, title, excerpt, reading_time_minutes, published_at, thumbnail_url"
+    )
     .eq("published", true)
     .order("published_at", { ascending: false, nullsFirst: false });
 
@@ -97,6 +104,7 @@ export async function getPublishedPostBySlug(
       excerpt: p.excerpt,
       readingTimeMinutes: p.readingTimeMinutes,
       publishedAt: p.date,
+      thumbnailUrl: null,
       body: `_This post is from static placeholder content. Connect Supabase and run blog migrations to load full articles from the database._\n\n${p.excerpt}`,
     };
   }
@@ -107,7 +115,7 @@ export async function getPublishedPostBySlug(
   const { data, error } = await supabase
     .from("blog_posts")
     .select(
-      "slug, title, excerpt, body, reading_time_minutes, published_at"
+      "slug, title, excerpt, body, reading_time_minutes, published_at, thumbnail_url"
     )
     .eq("slug", slug)
     .eq("published", true)
@@ -121,6 +129,7 @@ export async function getPublishedPostBySlug(
     excerpt: data.excerpt,
     readingTimeMinutes: data.reading_time_minutes,
     publishedAt: data.published_at,
+    thumbnailUrl: data.thumbnail_url,
     body: data.body ?? "",
   };
 }

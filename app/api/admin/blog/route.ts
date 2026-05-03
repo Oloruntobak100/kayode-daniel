@@ -22,7 +22,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("blog_posts")
     .select(
-      "id, slug, title, excerpt, body, reading_time_minutes, published, published_at, created_at, updated_at"
+      "id, slug, title, excerpt, body, reading_time_minutes, published, published_at, thumbnail_url, created_at, updated_at"
     )
     .order("updated_at", { ascending: false });
 
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
     reading_time_minutes?: number | null;
     published?: boolean;
     published_at?: string | null;
+    thumbnail_url?: string | null;
   };
 
   try {
@@ -92,6 +93,7 @@ export async function POST(request: Request) {
           : null,
       published,
       published_at,
+      thumbnail_url: body.thumbnail_url?.trim() || null,
     })
     .select("id, slug, title")
     .single();

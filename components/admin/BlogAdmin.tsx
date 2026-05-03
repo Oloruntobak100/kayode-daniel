@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { slugifyTitle } from "@/lib/blog-slug";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ type BlogPostRow = {
   reading_time_minutes: number | null;
   published: boolean;
   published_at: string | null;
+  thumbnail_url: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -24,6 +26,7 @@ type FormState = {
   excerpt: string;
   body: string;
   reading_time_minutes: string;
+  thumbnail_url: string;
   published: boolean;
   published_at: string;
 };
@@ -36,6 +39,7 @@ function emptyForm(): FormState {
     excerpt: "",
     body: "",
     reading_time_minutes: "",
+    thumbnail_url: "",
     published: false,
     published_at: "",
   };
@@ -56,6 +60,9 @@ export default function BlogAdmin() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [lastCreatedSlug, setLastCreatedSlug] = useState<string | null>(null);
+  const [thumbnailBusy, setThumbnailBusy] = useState<
+    "idle" | "upload" | "generate"
+  >("idle");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -88,6 +95,7 @@ export default function BlogAdmin() {
       body: p.body ?? "",
       reading_time_minutes:
         p.reading_time_minutes != null ? String(p.reading_time_minutes) : "",
+      thumbnail_url: p.thumbnail_url ?? "",
       published: p.published,
       published_at: p.published_at
         ? p.published_at.slice(0, 16)
@@ -101,6 +109,64 @@ export default function BlogAdmin() {
     setForm(emptyForm());
     setMessage(null);
     setLastCreatedSlug(null);
+  }
+
+  async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setThumbnailBusy("upload");
+    setMessage(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload-blog-thumbnail", {
+        method: "POST",
+        body: fd,
+      });
+      const json = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok) {
+        setMessage(json.error ?? "Upload failed");
+        return;
+      }
+      if (json.url) {
+        setForm((f) => ({ ...f, thumbnail_url: json.url! }));
+      }
+    } catch {
+      setMessage("Upload failed");
+    } finally {
+      setThumbnailBusy("idle");
+    }
+  }
+
+  async function handleGenerateThumbnail() {
+    const title = form.title.trim();
+    if (!title) {
+      setMessage("Add a title first — it is used as the image prompt.");
+      return;
+    }
+    setThumbnailBusy("generate");
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/generate-blog-thumbnail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      const json = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok) {
+        setMessage(json.error ?? "Generation failed");
+        return;
+      }
+      if (json.url) {
+        setForm((f) => ({ ...f, thumbnail_url: json.url! }));
+        setMessage("Thumbnail generated. Save the post to keep it.");
+      }
+    } catch {
+      setMessage("Generation failed");
+    } finally {
+      setThumbnailBusy("idle");
+    }
   }
 
   async function copyShareLink(slug: string) {
@@ -138,6 +204,7 @@ export default function BlogAdmin() {
       excerpt: form.excerpt.trim() || null,
       body: form.body,
       reading_time_minutes: reading,
+      thumbnail_url: form.thumbnail_url.trim() || null,
       published: form.published,
       published_at: form.published
         ? form.published_at
@@ -335,6 +402,63 @@ export default function BlogAdmin() {
                 className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               />
             </label>
+
+            <div className="space-y-2">
+              <span className="block text-xs font-medium uppercase tracking-wide text-muted">
+                Thumbnail
+              </span>
+              <p className="text-xs leading-relaxed text-muted">
+                Upload an image or generate one with Fal AI using your title as the
+                prompt (engaging cover art, no text in the image).
+              </p>
+              {form.thumbnail_url ? (
+                <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-xl border border-black/10 bg-black/5">
+                  <Image
+                    src={form.thumbnail_url}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                </div>
+              ) : null}
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="cursor-pointer rounded-pill border border-black/15 bg-white/80 px-4 py-2 text-sm font-medium transition hover:border-black/25">
+                  {thumbnailBusy === "upload" ? "Uploading…" : "Upload image"}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="sr-only"
+                    disabled={thumbnailBusy !== "idle"}
+                    onChange={(e) => void handleThumbnailUpload(e)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  disabled={
+                    thumbnailBusy !== "idle" || !form.title.trim()
+                  }
+                  onClick={() => void handleGenerateThumbnail()}
+                  className="rounded-pill border border-accent/35 bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition hover:bg-accent/15 disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  {thumbnailBusy === "generate"
+                    ? "Generating…"
+                    : "Generate with Fal AI"}
+                </button>
+                {form.thumbnail_url ? (
+                  <button
+                    type="button"
+                    disabled={thumbnailBusy !== "idle"}
+                    onClick={() =>
+                      setForm((f) => ({ ...f, thumbnail_url: "" }))
+                    }
+                    className="text-sm font-medium text-muted underline-offset-2 hover:underline"
+                  >
+                    Remove
+                  </button>
+                ) : null}
+              </div>
+            </div>
 
             <label className="block space-y-1.5">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
