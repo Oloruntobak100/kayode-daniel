@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+  <rect width="32" height="32" rx="8" fill="url(#kd-favicon-grad)"/>
+  <defs>
+    <linearGradient id="kd-favicon-grad" x1="4" y1="6" x2="28" y2="26" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#718CFF"/>
+      <stop offset="0.45" stop-color="#4F6EF7"/>
+      <stop offset="1" stop-color="#3A4EB8"/>
+    </linearGradient>
+  </defs>
+  <path fill="#fff" d="M8 7.5h3.15v17H8z"/>
+  <path fill="#fff" d="M11.15 7.5L23.85 7.5 11.15 14.35z"/>
+  <path fill="#fff" d="M11.15 15.85L23.85 24.5 11.15 24.5z"/>
+</svg>
