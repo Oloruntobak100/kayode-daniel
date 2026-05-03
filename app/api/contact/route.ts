@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+/** Override with `N8N_CONTACT_WEBHOOK_URL` on Vercel or `.env.local` if this path changes */
+const DEFAULT_N8N_CONTACT_WEBHOOK =
+  "https://silentminds.app.n8n.cloud/webhook/contact";
+
 const MAX_NAME = 200;
 const MAX_EMAIL = 320;
 const MAX_MESSAGE = 12_000;
@@ -11,13 +15,9 @@ function isValidEmail(s: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const webhookUrl = process.env.N8N_CONTACT_WEBHOOK_URL?.trim();
-  if (!webhookUrl) {
-    return NextResponse.json(
-      { error: "Contact form is not configured" },
-      { status: 503 }
-    );
-  }
+  const webhookUrl =
+    process.env.N8N_CONTACT_WEBHOOK_URL?.trim() ||
+    DEFAULT_N8N_CONTACT_WEBHOOK;
 
   let body: { name?: string; email?: string; message?: string };
   try {
