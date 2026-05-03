@@ -64,8 +64,9 @@ export default function Contact() {
       }
       setNotice({
         tone: "success",
-        title: "Message sent",
-        detail: "Thanks — I'll get back to you soon.",
+        title: "Message received",
+        detail:
+          "Thank you for reaching out. Your message has been delivered successfully, and you can expect a reply shortly.",
       });
       setName("");
       setEmail("");
