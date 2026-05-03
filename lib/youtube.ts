@@ -39,10 +39,21 @@ export function youTubeThumbnailUrl(videoId: string): string {
 
 export function youTubeEmbedUrl(
   videoId: string,
-  opts: { autoplay?: boolean; mute?: boolean; playsinline?: boolean } = {}
+  opts: {
+    autoplay?: boolean;
+    mute?: boolean;
+    playsinline?: boolean;
+    controls?: boolean;
+  } = {}
 ): string {
-  const { autoplay = true, mute = true, playsinline = true } = opts;
+  const {
+    autoplay = true,
+    mute = true,
+    playsinline = true,
+    controls = true,
+  } = opts;
   const p = new URLSearchParams();
+  p.set("controls", controls ? "1" : "0");
   if (autoplay) p.set("autoplay", "1");
   if (mute) p.set("mute", "1");
   if (playsinline) p.set("playsinline", "1");
