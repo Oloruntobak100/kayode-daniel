@@ -88,10 +88,10 @@ export default function Projects({
             className="absolute -bottom-1 left-0 h-[3px] w-[min(100%,7rem)] rounded-full bg-accent"
           />
         </div>
-        <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight">
+        <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
           Selected work
         </h2>
-        <p className="mt-3 max-w-xl text-muted">
+        <p className="mt-3 max-w-xl text-sm text-muted sm:text-base">
           {isLive ? (
             <>
               Work samples and walkthroughs — filter by focus area. Open a card
@@ -113,7 +113,7 @@ export default function Projects({
 
       <motion.div
         variants={staggerItem}
-        className="mb-10 flex flex-wrap gap-2 md:gap-3"
+        className="mb-8 flex flex-wrap gap-2 sm:mb-10 md:gap-3"
         role="tablist"
         aria-label="Project categories"
       >
@@ -128,7 +128,7 @@ export default function Projects({
               data-cursor-hover
               onClick={() => setActiveFilter(cat.id)}
               className={cn(
-                "rounded-pill border px-4 py-2 text-xs font-medium transition md:text-sm",
+                "inline-flex min-h-[44px] items-center justify-center rounded-pill border px-3 py-2.5 text-xs font-medium transition touch-manipulation active:scale-[0.98] sm:px-4 md:text-sm",
                 selected
                   ? "border-accent/45 bg-accent/12 text-foreground shadow-soft ring-2 ring-accent/25"
                   : "border-black/10 bg-white/55 text-foreground/85 backdrop-blur-sm hover:border-black/18"
@@ -142,7 +142,7 @@ export default function Projects({
 
       <motion.div
         variants={staggerItem}
-        className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
       >
         {filtered.map((p) => (
           <ShowcaseProjectCard
@@ -152,6 +152,8 @@ export default function Projects({
             imageSrc={p.imageSrc}
             description={p.description}
             contentImageUrl={p.contentImageUrl}
+            youtubeUrl={p.youtubeUrl}
+            projectUrl={p.projectUrl}
           />
         ))}
       </motion.div>

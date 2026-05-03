@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { isYouTubeUrl } from "@/lib/youtube";
 
 function revalidatePortfolioPages() {
   revalidatePath("/", "layout");
@@ -23,6 +24,8 @@ export async function PATCH(request: Request, context: Ctx) {
     title?: string;
     description?: string;
     content_image_url?: string | null;
+    youtube_url?: string | null;
+    project_url?: string | null;
     category_id?: string;
     image_url?: string | null;
     sort_order?: number;
@@ -49,6 +52,29 @@ export async function PATCH(request: Request, context: Ctx) {
   if (body.content_image_url !== undefined) {
     patch.content_image_url = body.content_image_url?.trim() || null;
   }
+  if (body.youtube_url !== undefined) {
+    const y = body.youtube_url?.trim() || null;
+    if (y && !isYouTubeUrl(y)) {
+      return NextResponse.json({ error: "Invalid YouTube URL" }, { status: 400 });
+    }
+    patch.youtube_url = y;
+  }
+  if (body.project_url !== undefined) {
+    const p = body.project_url?.trim() || null;
+    if (p) {
+      try {
+        const u = new URL(p);
+        if (u.protocol !== "http:" && u.protocol !== "https:") {
+          return NextResponse.json({ error: "Invalid project URL" }, { status: 400 });
+        }
+        patch.project_url = u.toString();
+      } catch {
+        return NextResponse.json({ error: "Invalid project URL" }, { status: 400 });
+      }
+    } else {
+      patch.project_url = null;
+    }
+  }
   if (body.category_id !== undefined) {
     if (!isValidShowcaseCategoryId(body.category_id)) {
       return NextResponse.json({ error: "Invalid category_id" }, { status: 400 });
@@ -65,7 +91,7 @@ export async function PATCH(request: Request, context: Ctx) {
     .update(patch)
     .eq("id", id)
     .select(
-      "id, title, description, content_image_url, category_id, image_url, sort_order"
+      "id, title, description, content_image_url, youtube_url, project_url, category_id, image_url, sort_order"
     )
     .single();
 

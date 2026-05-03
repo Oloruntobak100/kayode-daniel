@@ -11,11 +11,15 @@ import Me from "@/components/sections/Me";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
 import MagneticButton from "@/components/ui/MagneticButton";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import { fadeSlideUp, sectionMarqueeSafe } from "@/lib/animations";
+import type { BlogListItem } from "@/lib/blog";
 import type { SectionId } from "@/lib/content";
 import type { PortfolioProjectsSource } from "@/lib/portfolio-projects";
 import type { ShowcaseProject } from "@/lib/showcase-project";
 import { cn } from "@/lib/utils";
+
+type BlogSource = "supabase" | "static";
 
 type Props = {
   activeSection: SectionId;
@@ -23,6 +27,8 @@ type Props = {
   onBackHome: () => void;
   showcaseProjects: ShowcaseProject[];
   portfolioSource: PortfolioProjectsSource;
+  blogPosts: BlogListItem[];
+  blogSource: BlogSource;
 };
 
 export default function SectionLayout({
@@ -31,12 +37,16 @@ export default function SectionLayout({
   onBackHome,
   showcaseProjects,
   portfolioSource,
+  blogPosts,
+  blogSource,
 }: Props) {
   /** Full-width content (no portrait column) */
   const hideAside =
     activeSection === "experience" ||
     activeSection === "projects" ||
-    activeSection === "skills";
+    activeSection === "skills" ||
+    activeSection === "blog" ||
+    activeSection === "contact";
 
   const renderSection = () => {
     switch (activeSection) {
@@ -54,7 +64,7 @@ export default function SectionLayout({
       case "skills":
         return <Skills />;
       case "blog":
-        return <Blog />;
+        return <Blog initialPosts={blogPosts} blogSource={blogSource} />;
       case "contact":
         return <Contact />;
       default:
@@ -67,7 +77,7 @@ export default function SectionLayout({
       <MagneticButton
         type="button"
         onClick={onBackHome}
-        className="glass-pill fixed left-4 top-[5.25rem] z-[45] inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground shadow-soft md:left-12 md:top-[7rem]"
+        className="glass-pill fixed right-[max(1rem,env(safe-area-inset-right))] top-[calc(5.25rem+env(safe-area-inset-top))] z-[45] inline-flex min-h-[44px] touch-manipulation items-center gap-2 px-4 py-2 text-sm font-medium text-foreground shadow-soft md:right-12 md:top-[calc(7rem+env(safe-area-inset-top))]"
         aria-label="Back to home"
       >
         <ArrowLeft className="h-4 w-4 text-accent" aria-hidden />
@@ -76,7 +86,7 @@ export default function SectionLayout({
 
       <div
         className={cn(
-          "mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-10 px-6 pb-36 pt-24 md:gap-14 md:px-12 md:pb-40 md:pt-32",
+          "mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-8 px-4 pb-36 pt-[calc(6rem+env(safe-area-inset-top))] sm:gap-10 sm:px-6 md:gap-14 md:px-12 md:pb-40 md:pt-32",
           hideAside
             ? "md:pt-28"
             : "md:grid-cols-[minmax(0,38%)_minmax(0,1fr)] md:pt-32"
@@ -112,6 +122,8 @@ export default function SectionLayout({
           </AnimatePresence>
         </div>
       </div>
+
+      <ScrollToTop />
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">

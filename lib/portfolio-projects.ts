@@ -13,6 +13,8 @@ function staticFallback(): ShowcaseProject[] {
     categoryId: p.categoryId,
     imageSrc: p.imageSrc,
     contentImageUrl: null,
+    youtubeUrl: null,
+    projectUrl: null,
   }));
 }
 
@@ -40,7 +42,7 @@ export async function getPortfolioShowcaseProjectsWithMeta(): Promise<{
   const { data, error } = await supabase
     .from("portfolio_projects")
     .select(
-      "id, title, description, content_image_url, category_id, image_url, sort_order"
+      "id, title, description, content_image_url, youtube_url, project_url, category_id, image_url, sort_order"
     )
     .order("sort_order", { ascending: true })
     .order("id", { ascending: true });
@@ -60,6 +62,8 @@ export async function getPortfolioShowcaseProjectsWithMeta(): Promise<{
         title: row.title,
         description: row.description,
         content_image_url: row.content_image_url,
+        youtube_url: row.youtube_url,
+        project_url: row.project_url,
         category_id: row.category_id,
         image_url: row.image_url,
         sort_order: row.sort_order,

@@ -6,6 +6,8 @@ create table if not exists public.portfolio_projects (
   title text not null,
   description text not null default '',
   content_image_url text,
+  youtube_url text,
+  project_url text,
   category_id text not null,
   image_url text,
   sort_order integer not null default 0,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { projectPortfolioCategories } from "@/lib/portfolio-source";
 import { showcaseCategoryIds } from "@/lib/portfolio-categories";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,8 @@ type AdminProject = {
   title: string;
   description: string;
   content_image_url: string | null;
+  youtube_url: string | null;
+  project_url: string | null;
   category_id: string;
   image_url: string | null;
   sort_order: number;
@@ -20,6 +22,8 @@ type FormState = {
   title: string;
   description: string;
   content_image_url: string;
+  youtube_url: string;
+  project_url: string;
   category_id: string;
   sort_order: number;
 };
@@ -29,11 +33,18 @@ const emptyForm = (): FormState => ({
   title: "",
   description: "",
   content_image_url: "",
+  youtube_url: "",
+  project_url: "",
   category_id: showcaseCategoryIds[0] ?? "saas-web-app",
   sort_order: 0,
 });
 
-export default function AdminDashboard() {
+type Props = {
+  /** When true, outer shell (title / Back to site) is omitted — used by combined admin page */
+  embedded?: boolean;
+};
+
+export default function AdminDashboard({ embedded = false }: Props) {
   const [projects, setProjects] = useState<AdminProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +85,8 @@ export default function AdminDashboard() {
       title: p.title,
       description: p.description,
       content_image_url: p.content_image_url ?? "",
+      youtube_url: p.youtube_url ?? "",
+      project_url: p.project_url ?? "",
       category_id: p.category_id,
       sort_order: p.sort_order,
     });
@@ -120,6 +133,8 @@ export default function AdminDashboard() {
         title: form.title.trim(),
         description: form.description.trim(),
         content_image_url: form.content_image_url.trim() || null,
+        youtube_url: form.youtube_url.trim() || null,
+        project_url: form.project_url.trim() || null,
         category_id: form.category_id,
         /** Card imagery uses the detail image + site fallback only — no separate thumbnail column. */
         image_url: null as string | null,
@@ -192,30 +207,54 @@ export default function AdminDashboard() {
 
   const categoryOptions = projectPortfolioCategories.filter((c) => c.id !== "all");
 
+  const groupedProjects = useMemo(() => {
+    const byCat = new Map<string, AdminProject[]>();
+    for (const p of projects) {
+      const list = byCat.get(p.category_id) ?? [];
+      list.push(p);
+      byCat.set(p.category_id, list);
+    }
+    const known = categoryOptions
+      .map((c) => ({ label: c.label, id: c.id, items: byCat.get(c.id) ?? [] }))
+      .filter((g) => g.items.length > 0);
+    const knownIds = new Set<string>(categoryOptions.map((c) => c.id));
+    const extra: { label: string; id: string; items: AdminProject[] }[] = [];
+    for (const [id, items] of Array.from(byCat.entries())) {
+      if (!knownIds.has(id) && items.length) {
+        extra.push({ label: id, id, items });
+      }
+    }
+    return [...known, ...extra];
+  }, [projects, categoryOptions]);
+
   return (
-    <div className="mx-auto min-h-screen max-w-5xl px-4 py-10 md:px-8">
-      <header className="mb-10 flex flex-col gap-4 border-b border-black/10 pb-8 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-semibold tracking-tight">
-            Portfolio projects
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            Internal admin — projects stored in Supabase.
-          </p>
-        </div>
-        <a
-          href="/"
-          className="rounded-pill border border-black/15 bg-white/70 px-4 py-2 text-sm font-medium backdrop-blur-sm hover:bg-white"
-        >
-          Back to site
-        </a>
-      </header>
+    <div className="mx-auto max-w-5xl px-4 py-10 md:px-8">
+      {!embedded ? (
+        <header className="mb-10 flex flex-col gap-4 border-b border-black/10 pb-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-semibold tracking-tight">
+              Portfolio projects
+            </h1>
+            <p className="mt-1 text-sm text-muted">
+              Internal admin — projects stored in Supabase.
+            </p>
+          </div>
+          <a
+            href="/"
+            className="inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-pill border border-black/15 bg-white/70 px-4 py-2 text-sm font-medium backdrop-blur-sm hover:bg-white"
+          >
+            Back to site
+          </a>
+        </header>
+      ) : (
+        <h2 className="sr-only">Portfolio projects</h2>
+      )}
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
-              All projects
+              By category
             </h2>
             <button
               type="button"
@@ -232,28 +271,33 @@ export default function AdminDashboard() {
           ) : projects.length === 0 ? (
             <p className="text-sm text-muted">No projects yet. Create one on the right.</p>
           ) : (
-            <ul className="space-y-2">
-              {projects.map((p) => (
-                <li key={p.id}>
-                  <button
-                    type="button"
-                    onClick={() => selectProject(p)}
-                    className={cn(
-                      "w-full rounded-xl border px-3 py-2.5 text-left text-sm transition",
-                      form.id === p.id
-                        ? "border-accent/45 bg-accent/10 shadow-soft"
-                        : "border-black/10 bg-white/60 hover:border-black/20"
-                    )}
-                  >
-                    <span className="font-medium">{p.title}</span>
-                    <span className="mt-0.5 block text-xs text-muted">
-                      {categoryOptions.find((c) => c.id === p.category_id)?.label ??
-                        p.category_id}
-                    </span>
-                  </button>
-                </li>
+            <div className="space-y-6">
+              {groupedProjects.map((group) => (
+                <div key={group.id}>
+                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    {group.label}
+                  </h3>
+                  <ul className="space-y-2">
+                    {group.items.map((p) => (
+                      <li key={p.id}>
+                        <button
+                          type="button"
+                          onClick={() => selectProject(p)}
+                          className={cn(
+                            "min-h-[48px] w-full touch-manipulation rounded-xl border px-3 py-2.5 text-left text-sm transition",
+                            form.id === p.id
+                              ? "border-accent/45 bg-accent/10 shadow-soft"
+                              : "border-black/10 bg-white/60 hover:border-black/20"
+                          )}
+                        >
+                          <span className="font-medium">{p.title}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </section>
 
@@ -271,7 +315,7 @@ export default function AdminDashboard() {
                 required
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
+                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               />
             </label>
 
@@ -285,7 +329,7 @@ export default function AdminDashboard() {
                   setForm((f) => ({ ...f, description: e.target.value }))
                 }
                 rows={4}
-                className="w-full resize-y rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
+                className="w-full resize-y rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               />
             </label>
 
@@ -298,7 +342,7 @@ export default function AdminDashboard() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, category_id: e.target.value }))
                 }
-                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
+                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               >
                 {categoryOptions.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -310,10 +354,48 @@ export default function AdminDashboard() {
 
             <div className="space-y-2 rounded-xl border border-black/10 bg-white/40 p-4">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
+                YouTube (optional)
+              </span>
+              <p className="text-xs text-muted">
+                If set, the dialog shows an embedded video (autoplay, muted) instead of the
+                detail image. Paste a full YouTube link.
+              </p>
+              <input
+                value={form.youtube_url}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, youtube_url: e.target.value }))
+                }
+                placeholder="https://www.youtube.com/watch?v=…"
+                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
+              />
+            </div>
+
+            <div className="space-y-2 rounded-xl border border-black/10 bg-white/40 p-4">
+              <span className="text-xs font-medium uppercase tracking-wide text-muted">
+                Project / live URL (optional)
+              </span>
+              <p className="text-xs text-muted">
+                Shown as &quot;Visit project site&quot; on the card and in the dialog. Use for
+                web apps and case studies.
+              </p>
+              <input
+                value={form.project_url}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, project_url: e.target.value }))
+                }
+                placeholder="https://…"
+                className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
+              />
+            </div>
+
+            <div className="space-y-2 rounded-xl border border-black/10 bg-white/40 p-4">
+              <span className="text-xs font-medium uppercase tracking-wide text-muted">
                 Detail image (optional)
               </span>
               <p className="text-xs text-muted">
-                Shown in the project dialog. Upload to Storage or paste a URL.
+                Shown in the project dialog when no YouTube link is set. Upload to Storage or
+                paste a URL. For the grid, use a homepage screenshot or leave empty to use the
+                YouTube poster.
               </p>
               <input
                 ref={contentFileRef}
@@ -334,7 +416,7 @@ export default function AdminDashboard() {
                     setForm((f) => ({ ...f, content_image_url: e.target.value }))
                   }
                   placeholder="https://… or use upload above"
-                  className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-xs outline-none ring-accent/30 focus:ring-2"
+                  className="w-full rounded-xl border border-black/12 bg-white/90 px-3 py-2 font-mono text-base outline-none ring-accent/30 focus:ring-2 sm:text-xs"
                 />
               </label>
               {form.content_image_url ? (
@@ -362,7 +444,7 @@ export default function AdminDashboard() {
                     sort_order: Number.parseInt(e.target.value, 10) || 0,
                   }))
                 }
-                className="w-full max-w-[12rem] rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-sm outline-none ring-accent/30 focus:ring-2"
+                className="w-full max-w-[12rem] rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               />
             </label>
 

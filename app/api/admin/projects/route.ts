@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isValidShowcaseCategoryId } from "@/lib/portfolio-categories";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { isYouTubeUrl } from "@/lib/youtube";
 
 function revalidatePortfolioPages() {
   revalidatePath("/", "layout");
@@ -19,7 +20,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("portfolio_projects")
     .select(
-      "id, title, description, content_image_url, category_id, image_url, sort_order, created_at, updated_at"
+      "id, title, description, content_image_url, youtube_url, project_url, category_id, image_url, sort_order, created_at, updated_at"
     )
     .order("sort_order", { ascending: true })
     .order("id", { ascending: true });
@@ -33,6 +34,8 @@ export async function GET() {
     title: row.title,
     description: row.description ?? "",
     content_image_url: row.content_image_url,
+    youtube_url: row.youtube_url,
+    project_url: row.project_url,
     category_id: row.category_id,
     image_url: row.image_url,
     sort_order: row.sort_order ?? 0,
@@ -54,6 +57,8 @@ export async function POST(request: Request) {
     title?: string;
     description?: string;
     content_image_url?: string | null;
+    youtube_url?: string | null;
+    project_url?: string | null;
     category_id?: string;
     image_url?: string | null;
     sort_order?: number;
@@ -77,18 +82,38 @@ export async function POST(request: Request) {
 
   const image_url = body.image_url?.trim() || null;
 
+  const youtube_raw = body.youtube_url?.trim() || null;
+  if (youtube_raw && !isYouTubeUrl(youtube_raw)) {
+    return NextResponse.json({ error: "Invalid YouTube URL" }, { status: 400 });
+  }
+
+  let project_url: string | null = null;
+  if (body.project_url?.trim()) {
+    try {
+      const u = new URL(body.project_url.trim());
+      if (u.protocol !== "http:" && u.protocol !== "https:") {
+        return NextResponse.json({ error: "Invalid project URL" }, { status: 400 });
+      }
+      project_url = u.toString();
+    } catch {
+      return NextResponse.json({ error: "Invalid project URL" }, { status: 400 });
+    }
+  }
+
   const { data, error } = await supabase
     .from("portfolio_projects")
     .insert({
       title,
       description: body.description?.trim() ?? "",
       content_image_url: body.content_image_url?.trim() || null,
+      youtube_url: youtube_raw,
+      project_url,
       category_id,
       image_url,
       sort_order: body.sort_order ?? 0,
     })
     .select(
-      "id, title, description, content_image_url, category_id, image_url, sort_order"
+      "id, title, description, content_image_url, youtube_url, project_url, category_id, image_url, sort_order"
     )
     .single();
 

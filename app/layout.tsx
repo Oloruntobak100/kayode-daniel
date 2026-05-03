@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono, Montserrat, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
@@ -31,6 +31,13 @@ export const metadata: Metadata = {
   title: "Kayode Daniel — Information systems analysis, design & consulting; full-stack delivery",
   description:
     "Consulting on how businesses work and how information systems should run them: analysis, design, integration, and automation—enterprise, health, and MSc Information Systems.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

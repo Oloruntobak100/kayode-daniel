@@ -5,17 +5,24 @@ import CustomCursor from "@/components/CustomCursor";
 import Hero from "@/components/Hero";
 import SectionLayout from "@/components/SectionLayout";
 import { useSectionState } from "@/hooks/useSectionState";
+import type { BlogListItem } from "@/lib/blog";
 import type { ShowcaseProject } from "@/lib/showcase-project";
 import type { PortfolioProjectsSource } from "@/lib/portfolio-projects";
+
+type BlogSource = "supabase" | "static";
 
 type Props = {
   showcaseProjects: ShowcaseProject[];
   portfolioSource: PortfolioProjectsSource;
+  blogPosts: BlogListItem[];
+  blogSource: BlogSource;
 };
 
 export default function HomeClient({
   showcaseProjects,
   portfolioSource,
+  blogPosts,
+  blogSource,
 }: Props) {
   const { phase, activeSection, openSection, goHero } = useSectionState();
 
@@ -58,6 +65,8 @@ export default function HomeClient({
               onBackHome={goHero}
               showcaseProjects={showcaseProjects}
               portfolioSource={portfolioSource}
+              blogPosts={blogPosts}
+              blogSource={blogSource}
             />
           </motion.div>
         )}
