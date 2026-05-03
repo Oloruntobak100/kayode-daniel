@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { projectPortfolioCategories } from "@/lib/portfolio-source";
 import { showcaseCategoryIds } from "@/lib/portfolio-categories";
@@ -52,7 +53,20 @@ export default function AdminDashboard({ embedded = false }: Props) {
   const [saving, setSaving] = useState(false);
   const [uploadingContent, setUploadingContent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  /** Category ids in this set have their project list collapsed */
+  const [collapsedCategoryIds, setCollapsedCategoryIds] = useState<Set<string>>(
+    () => new Set()
+  );
   const contentFileRef = useRef<HTMLInputElement>(null);
+
+  const toggleCategoryCollapsed = useCallback((categoryId: string) => {
+    setCollapsedCategoryIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(categoryId)) next.delete(categoryId);
+      else next.add(categoryId);
+      return next;
+    });
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -271,32 +285,61 @@ export default function AdminDashboard({ embedded = false }: Props) {
           ) : projects.length === 0 ? (
             <p className="text-sm text-muted">No projects yet. Create one on the right.</p>
           ) : (
-            <div className="space-y-6">
-              {groupedProjects.map((group) => (
-                <div key={group.id}>
-                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                    {group.label}
-                  </h3>
-                  <ul className="space-y-2">
-                    {group.items.map((p) => (
-                      <li key={p.id}>
-                        <button
-                          type="button"
-                          onClick={() => selectProject(p)}
-                          className={cn(
-                            "min-h-[48px] w-full touch-manipulation rounded-xl border px-3 py-2.5 text-left text-sm transition",
-                            form.id === p.id
-                              ? "border-accent/45 bg-accent/10 shadow-soft"
-                              : "border-black/10 bg-white/60 hover:border-black/20"
-                          )}
-                        >
-                          <span className="font-medium">{p.title}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+            <div className="space-y-3">
+              {groupedProjects.map((group) => {
+                const isCollapsed = collapsedCategoryIds.has(group.id);
+                return (
+                  <div
+                    key={group.id}
+                    className="overflow-hidden rounded-xl border border-black/10 bg-white/40"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleCategoryCollapsed(group.id)}
+                      className="flex w-full min-h-[44px] items-center justify-between gap-2 px-3 py-2.5 text-left transition hover:bg-black/[0.04]"
+                      aria-expanded={!isCollapsed}
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+                        {group.label}
+                        <span className="ml-1.5 font-normal text-foreground/50">
+                          ({group.items.length})
+                        </span>
+                      </span>
+                      {isCollapsed ? (
+                        <ChevronRight
+                          className="h-4 w-4 shrink-0 text-muted"
+                          aria-hidden
+                        />
+                      ) : (
+                        <ChevronDown
+                          className="h-4 w-4 shrink-0 text-muted"
+                          aria-hidden
+                        />
+                      )}
+                    </button>
+                    {!isCollapsed ? (
+                      <ul className="space-y-2 border-t border-black/[0.06] px-2 py-2">
+                        {group.items.map((p) => (
+                          <li key={p.id}>
+                            <button
+                              type="button"
+                              onClick={() => selectProject(p)}
+                              className={cn(
+                                "min-h-[48px] w-full touch-manipulation rounded-xl border px-3 py-2.5 text-left text-sm transition",
+                                form.id === p.id
+                                  ? "border-accent/45 bg-accent/10 shadow-soft"
+                                  : "border-black/10 bg-white/60 hover:border-black/20"
+                              )}
+                            >
+                              <span className="font-medium">{p.title}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>

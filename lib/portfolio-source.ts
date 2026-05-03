@@ -528,6 +528,10 @@ export const projectPortfolioCategories = [
     label: "Social Media Automation",
   },
   {
+    id: "subdomain-email-warmup",
+    label: "Subdomain & Email Warmup Automation",
+  },
+  {
     id: "data-viz",
     label: "Data Analytics and Visualization",
   },
