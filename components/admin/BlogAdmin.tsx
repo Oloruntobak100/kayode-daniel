@@ -1,9 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { AlertCircle, CheckCircle2, Info } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { slugifyTitle } from "@/lib/blog-slug";
 import { cn } from "@/lib/utils";
+
+type Notice = {
+  tone: "success" | "error" | "neutral";
+  title: string;
+  detail?: string;
+};
 
 type BlogPostRow = {
   id: string;
@@ -58,7 +65,9 @@ export default function BlogAdmin() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [linkJustCopied, setLinkJustCopied] = useState(false);
+  const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [lastCreatedSlug, setLastCreatedSlug] = useState<string | null>(null);
   const [thumbnailBusy, setThumbnailBusy] = useState<
     "idle" | "upload" | "generate"
@@ -86,6 +95,12 @@ export default function BlogAdmin() {
     void load();
   }, [load]);
 
+  useEffect(() => {
+    return () => {
+      if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
+    };
+  }, []);
+
   function selectPost(p: BlogPostRow) {
     setForm({
       id: p.id,
@@ -101,14 +116,15 @@ export default function BlogAdmin() {
         ? p.published_at.slice(0, 16)
         : "",
     });
-    setMessage(null);
+    setNotice(null);
     setLastCreatedSlug(null);
   }
 
   function clearForm() {
     setForm(emptyForm());
-    setMessage(null);
+    setNotice(null);
     setLastCreatedSlug(null);
+    setLinkJustCopied(false);
   }
 
   async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -116,7 +132,7 @@ export default function BlogAdmin() {
     e.target.value = "";
     if (!file) return;
     setThumbnailBusy("upload");
-    setMessage(null);
+    setNotice(null);
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -126,14 +142,17 @@ export default function BlogAdmin() {
       });
       const json = (await res.json()) as { url?: string; error?: string };
       if (!res.ok) {
-        setMessage(json.error ?? "Upload failed");
+        setNotice({
+          tone: "error",
+          title: json.error ?? "Upload failed",
+        });
         return;
       }
       if (json.url) {
         setForm((f) => ({ ...f, thumbnail_url: json.url! }));
       }
     } catch {
-      setMessage("Upload failed");
+      setNotice({ tone: "error", title: "Upload failed" });
     } finally {
       setThumbnailBusy("idle");
     }
@@ -142,11 +161,14 @@ export default function BlogAdmin() {
   async function handleGenerateThumbnail() {
     const title = form.title.trim();
     if (!title) {
-      setMessage("Add a title first — it is used as the image prompt.");
+      setNotice({
+        tone: "neutral",
+        title: "Add a title first — it is used as the image prompt.",
+      });
       return;
     }
     setThumbnailBusy("generate");
-    setMessage(null);
+    setNotice(null);
     try {
       const res = await fetch("/api/admin/generate-blog-thumbnail", {
         method: "POST",
@@ -155,15 +177,22 @@ export default function BlogAdmin() {
       });
       const json = (await res.json()) as { url?: string; error?: string };
       if (!res.ok) {
-        setMessage(json.error ?? "Generation failed");
+        setNotice({
+          tone: "error",
+          title: json.error ?? "Generation failed",
+        });
         return;
       }
       if (json.url) {
         setForm((f) => ({ ...f, thumbnail_url: json.url! }));
-        setMessage("Thumbnail generated. Save the post to keep it.");
+        setNotice({
+          tone: "success",
+          title: "Thumbnail ready",
+          detail: "Save the post to keep this image on the article.",
+        });
       }
     } catch {
-      setMessage("Generation failed");
+      setNotice({ tone: "error", title: "Generation failed" });
     } finally {
       setThumbnailBusy("idle");
     }
@@ -173,22 +202,40 @@ export default function BlogAdmin() {
     const url = `${siteBaseUrl()}/blog/${slug}`;
     try {
       await navigator.clipboard.writeText(url);
-      setMessage("Link copied to clipboard.");
+      if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
+      setLinkJustCopied(true);
+      setNotice({
+        tone: "success",
+        title: "Link copied",
+        detail: "Paste it anywhere to share this post.",
+      });
+      copyResetTimer.current = setTimeout(() => {
+        setLinkJustCopied(false);
+        copyResetTimer.current = null;
+      }, 2800);
     } catch {
-      setMessage(url);
+      setNotice({
+        tone: "error",
+        title: "Clipboard not available",
+        detail: `Copy this link manually: ${url}`,
+      });
     }
   }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
+    setNotice(null);
     setLastCreatedSlug(null);
 
     const slug = form.slug.trim();
     const title = form.title.trim();
     if (!slug || !title) {
-      setMessage("Slug and title are required.");
+      setNotice({
+        tone: "neutral",
+        title: "Slug and title are required",
+        detail: "Fill in both fields before saving.",
+      });
       setSaving(false);
       return;
     }
@@ -222,11 +269,18 @@ export default function BlogAdmin() {
         });
         const json = (await res.json()) as { error?: string; slug?: string };
         if (!res.ok) {
-          setMessage(json.error ?? "Save failed");
+          setNotice({
+            tone: "error",
+            title: json.error ?? "Save failed",
+          });
           setSaving(false);
           return;
         }
-        setMessage("Saved.");
+        setNotice({
+          tone: "success",
+          title: "Changes saved",
+          detail: "Your post is updated on the site.",
+        });
         await load();
       } else {
         const res = await fetch("/api/admin/blog", {
@@ -240,12 +294,19 @@ export default function BlogAdmin() {
           error?: string;
         };
         if (!res.ok) {
-          setMessage(json.error ?? "Create failed");
+          setNotice({
+            tone: "error",
+            title: json.error ?? "Create failed",
+          });
           setSaving(false);
           return;
         }
         setLastCreatedSlug(json.slug ?? slug);
-        setMessage("Created. Copy your share link below.");
+        setNotice({
+          tone: "success",
+          title: "Post created",
+          detail: "You can copy the public link from the box above, or use the button below.",
+        });
         await load();
         if (json.id) {
           setForm((f) => ({
@@ -264,17 +325,24 @@ export default function BlogAdmin() {
     if (!form.id) return;
     if (!confirm("Delete this post?")) return;
     setSaving(true);
-    setMessage(null);
+    setNotice(null);
     try {
       const res = await fetch(`/api/admin/blog/${form.id}`, { method: "DELETE" });
       if (!res.ok) {
         const json = (await res.json()) as { error?: string };
-        setMessage(json.error ?? "Delete failed");
+        setNotice({
+          tone: "error",
+          title: json.error ?? "Delete failed",
+        });
         return;
       }
       clearForm();
       await load();
-      setMessage("Deleted.");
+      setNotice({
+        tone: "success",
+        title: "Post deleted",
+        detail: "It has been removed from the database.",
+      });
     } finally {
       setSaving(false);
     }
@@ -345,6 +413,47 @@ export default function BlogAdmin() {
               {form.id ? "Edit post" : "New post"}
             </h2>
 
+            {notice ? (
+              <div
+                role="status"
+                aria-live="polite"
+                className={cn(
+                  "flex gap-3 rounded-xl border px-4 py-3 text-sm shadow-soft",
+                  notice.tone === "success" &&
+                    "border-emerald-200/90 bg-emerald-50/95 text-emerald-950",
+                  notice.tone === "error" &&
+                    "border-red-200 bg-red-50/95 text-red-900",
+                  notice.tone === "neutral" &&
+                    "border-black/12 bg-white/70 text-foreground/90"
+                )}
+              >
+                {notice.tone === "success" ? (
+                  <CheckCircle2
+                    className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600"
+                    aria-hidden
+                  />
+                ) : notice.tone === "error" ? (
+                  <AlertCircle
+                    className="mt-0.5 h-5 w-5 shrink-0 text-red-600"
+                    aria-hidden
+                  />
+                ) : (
+                  <Info
+                    className="mt-0.5 h-5 w-5 shrink-0 text-muted"
+                    aria-hidden
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold leading-snug">{notice.title}</p>
+                  {notice.detail ? (
+                    <p className="mt-1 break-all text-xs leading-relaxed opacity-90">
+                      {notice.detail}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
             {shareUrl ? (
               <div className="rounded-xl border border-accent/25 bg-accent/5 p-4">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -354,9 +463,14 @@ export default function BlogAdmin() {
                 <button
                   type="button"
                   onClick={() => void copyShareLink(shareSlug!)}
-                  className="mt-3 rounded-pill bg-accent px-4 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95"
+                  className={cn(
+                    "mt-3 rounded-pill px-4 py-2 text-sm font-semibold shadow-soft transition",
+                    linkJustCopied
+                      ? "bg-emerald-600 text-white ring-2 ring-emerald-300/80"
+                      : "bg-accent text-white hover:opacity-95"
+                  )}
                 >
-                  Copy link
+                  {linkJustCopied ? "Copied!" : "Copy link"}
                 </button>
               </div>
             ) : null}
@@ -559,11 +673,6 @@ export default function BlogAdmin() {
               ) : null}
             </div>
 
-            {message ? (
-              <p className="text-sm text-muted" role="status">
-                {message}
-              </p>
-            ) : null}
           </form>
         </section>
       </div>
