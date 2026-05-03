@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef } from "react";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SHOWCASE_CARD_FALLBACK_SRC } from "@/lib/showcase-card-image";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ export default function ShowcaseProjectCard({
   contentImageUrl,
 }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   const openDialog = useCallback(() => {
     dialogRef.current?.showModal();
@@ -28,6 +30,14 @@ export default function ShowcaseProjectCard({
 
   const closeDialog = useCallback(() => {
     dialogRef.current?.close();
+  }, []);
+
+  const openLightbox = useCallback((src: string) => {
+    setLightboxSrc(src);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxSrc(null);
   }, []);
 
   useEffect(() => {
@@ -40,6 +50,20 @@ export default function ShowcaseProjectCard({
     d.addEventListener("cancel", onCancel);
     return () => d.removeEventListener("cancel", onCancel);
   }, [closeDialog]);
+
+  useEffect(() => {
+    if (!lightboxSrc) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [lightboxSrc, closeLightbox]);
 
   const trimmed = description?.trim() ?? "";
   const excerpt =
@@ -64,9 +88,9 @@ export default function ShowcaseProjectCard({
       >
         <button
           type="button"
-          onClick={openDialog}
-          className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-          aria-label={`Open details for ${title}`}
+          onClick={() => openLightbox(cardThumbSrc)}
+          className="relative block w-full cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          aria-label={`View ${title} image full screen`}
         >
           <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
             <Image
@@ -76,20 +100,32 @@ export default function ShowcaseProjectCard({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 380px"
               className="object-cover transition duration-300 group-hover:scale-[1.02]"
             />
+            <span
+              className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 py-2 text-left text-[11px] font-medium text-white/95 opacity-0 transition group-hover:opacity-100"
+              aria-hidden
+            >
+              Click to expand
+            </span>
           </div>
-          <div className="border-t border-black/[0.06] p-4 md:p-5">
-            <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
-              {title}
-            </h3>
-            <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
-              {categoryLabel}
+        </button>
+
+        <button
+          type="button"
+          onClick={openDialog}
+          className="block w-full border-t border-black/[0.06] p-4 text-left transition hover:bg-black/[0.03] md:p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          aria-label={`Open details for ${title}`}
+        >
+          <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
+            {title}
+          </h3>
+          <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+            {categoryLabel}
+          </p>
+          {excerpt ? (
+            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-foreground/80">
+              {excerpt}
             </p>
-            {excerpt ? (
-              <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-foreground/80">
-                {excerpt}
-              </p>
-            ) : null}
-          </div>
+          ) : null}
         </button>
       </article>
 
@@ -112,14 +148,22 @@ export default function ShowcaseProjectCard({
           </div>
           <div className="space-y-4 p-4">
             {detailSrc ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-100">
-                {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary URLs from Supabase or uploads */}
+              <button
+                type="button"
+                onClick={() => openLightbox(detailSrc)}
+                className="relative block w-full overflow-hidden rounded-xl bg-neutral-100 outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-accent"
+                aria-label="View detail image full screen"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={detailSrc}
                   alt=""
-                  className="h-full w-full object-contain"
+                  className="max-h-[min(50vh,360px)] w-full object-contain"
                 />
-              </div>
+                <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 to-transparent py-2 text-center text-[11px] text-white/95">
+                  Click to expand
+                </span>
+              </button>
             ) : null}
             {description?.trim() ? (
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
@@ -132,6 +176,39 @@ export default function ShowcaseProjectCard({
           </div>
         </div>
       </dialog>
+
+      {lightboxSrc ? (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/92 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full screen image"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              closeLightbox();
+            }}
+            className="absolute right-4 top-4 z-[210] flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
+            aria-label="Close full screen image"
+          >
+            <X className="h-5 w-5" strokeWidth={2} />
+          </button>
+          <div
+            className="relative max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={lightboxSrc}
+              alt=""
+              className="max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)] object-contain shadow-2xl"
+            />
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
