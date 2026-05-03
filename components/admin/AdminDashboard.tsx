@@ -53,14 +53,14 @@ export default function AdminDashboard({ embedded = false }: Props) {
   const [saving, setSaving] = useState(false);
   const [uploadingContent, setUploadingContent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  /** Category ids in this set have their project list collapsed */
-  const [collapsedCategoryIds, setCollapsedCategoryIds] = useState<Set<string>>(
+  /** Category ids in this set have their project list expanded (default: none → all collapsed) */
+  const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(
     () => new Set()
   );
   const contentFileRef = useRef<HTMLInputElement>(null);
 
-  const toggleCategoryCollapsed = useCallback((categoryId: string) => {
-    setCollapsedCategoryIds((prev) => {
+  const toggleCategoryExpanded = useCallback((categoryId: string) => {
+    setExpandedCategoryIds((prev) => {
       const next = new Set(prev);
       if (next.has(categoryId)) next.delete(categoryId);
       else next.add(categoryId);
@@ -287,7 +287,7 @@ export default function AdminDashboard({ embedded = false }: Props) {
           ) : (
             <div className="space-y-3">
               {groupedProjects.map((group) => {
-                const isCollapsed = collapsedCategoryIds.has(group.id);
+                const isExpanded = expandedCategoryIds.has(group.id);
                 return (
                   <div
                     key={group.id}
@@ -295,9 +295,9 @@ export default function AdminDashboard({ embedded = false }: Props) {
                   >
                     <button
                       type="button"
-                      onClick={() => toggleCategoryCollapsed(group.id)}
+                      onClick={() => toggleCategoryExpanded(group.id)}
                       className="flex w-full min-h-[44px] items-center justify-between gap-2 px-3 py-2.5 text-left transition hover:bg-black/[0.04]"
-                      aria-expanded={!isCollapsed}
+                      aria-expanded={isExpanded}
                     >
                       <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                         {group.label}
@@ -305,19 +305,19 @@ export default function AdminDashboard({ embedded = false }: Props) {
                           ({group.items.length})
                         </span>
                       </span>
-                      {isCollapsed ? (
-                        <ChevronRight
+                      {isExpanded ? (
+                        <ChevronDown
                           className="h-4 w-4 shrink-0 text-muted"
                           aria-hidden
                         />
                       ) : (
-                        <ChevronDown
+                        <ChevronRight
                           className="h-4 w-4 shrink-0 text-muted"
                           aria-hidden
                         />
                       )}
                     </button>
-                    {!isCollapsed ? (
+                    {isExpanded ? (
                       <ul className="space-y-2 border-t border-black/[0.06] px-2 py-2">
                         {group.items.map((p) => (
                           <li key={p.id}>
