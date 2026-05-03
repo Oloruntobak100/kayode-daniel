@@ -10,7 +10,7 @@ export const professionalTitles =
 
 /** Elevator positioning — what you do in one breath */
 export const elevatorPitch =
-  "I help startups and businesses turn ideas into reality—from information systems and product design through to shipped software—with 8+ years across ERP, SaaS, EHR, mobile, and workflow-heavy systems.";
+  "I help startups and businesses turn ideas into reality—from information systems and product design through to shipped software—with 6+ years across ERP, SaaS, EHR, mobile, and workflow-heavy systems.";
 
 /**
  * Me section only — short, human intro. Detail lives in Experience, Skills, Projects.
@@ -24,7 +24,7 @@ export const meIntroduction = {
 
   /** About Me body copy */
   paragraphs: [
-    `I help startups and businesses turn ideas into reality through well-designed information systems—building software products that are structured, scalable, and aligned with how the business actually operates. With over 8 years of experience in managing the successful design and development of Enterprise Resource Planning solutions, SaaS applications, electronic health record systems, mobile applications, and more, I deliver high-quality solutions that are built to last.`,
+    `I help startups and businesses turn ideas into reality through well-designed information systems—building software products that are structured, scalable, and aligned with how the business actually operates. With over 6 years of experience in managing the successful design and development of Enterprise Resource Planning solutions, SaaS applications, electronic health record systems, mobile applications, and more, I deliver high-quality solutions that are built to last.`,
 
     `When you work with me, you're not just hiring a developer—you're working with a technical partner who takes ownership of the product end-to-end, from architecture and design to development and deployment.`,
 
@@ -40,14 +40,14 @@ export const meIntroduction = {
  * shipped API/automation/integration work (aligned with your positioning) rather than a vague stack count.
  */
 export const meMetrics = [
-  { value: "8+", label: "Years of experience" },
+  { value: "6+", label: "Years of experience" },
   { value: "20+", label: "Projects completed" },
   { value: "40+", label: "Integrations delivered" },
 ] as const;
 
 /** Full professional summary (multi-paragraph, publication-ready) */
 export const professionalSummary = {
-  lead: `With 8+ years in information systems, I combine consulting on how businesses work and how they should be supported, with full-stack and automation delivery—across ERP, health information systems, data platforms, and enterprise integration.`,
+  lead: `With 6+ years in information systems, I combine consulting on how businesses work and how they should be supported, with full-stack and automation delivery—across ERP, health information systems, data platforms, and enterprise integration.`,
 
   stackContext: `My current stack leans on Next.js, Node.js, Supabase, and Vercel, with n8n and custom APIs where processes need to run as reliable, auditable automations instead of ad hoc spreadsheets.`,
 
@@ -171,7 +171,7 @@ export const enterpriseSystems = {
 
   programs: [
     {
-      name: "National Social Safety-Nets Coordinating Office Management Information System",
+      name: "National Social Safety-Nets Coordinating Office Management Information System — World Bank Sponsored Project",
       shortName: "NASSCO MIS",
     },
     {
@@ -183,7 +183,7 @@ export const enterpriseSystems = {
       shortName: "FERMA EDMS",
     },
     {
-      name: "Nigeria for Women Project — Management Information System",
+      name: "Nigeria for Women Project — Management Information System — World Bank Sponsored Project",
       shortName: "NFWP MIS / PMIS",
     },
     {
@@ -539,6 +539,9 @@ export const projectPortfolioCategories = [
 
 export type ProjectPortfolioCategoryId =
   (typeof projectPortfolioCategories)[number]["id"];
+
+/** Default Projects section tab on the home page (not &quot;All&quot;) */
+export const defaultPortfolioCategoryFilter = "saas-web-app" as const satisfies ProjectPortfolioCategoryId;
 
 export const portfolioShowcaseProjects = [
   {

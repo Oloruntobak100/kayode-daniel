@@ -100,6 +100,16 @@ export async function POST(request: Request) {
     }
   }
 
+  const { data: maxRow } = await supabase
+    .from("portfolio_projects")
+    .select("sort_order")
+    .eq("category_id", category_id)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const nextSortOrder = (maxRow?.sort_order ?? -1) + 1;
+
   const { data, error } = await supabase
     .from("portfolio_projects")
     .insert({
@@ -110,7 +120,7 @@ export async function POST(request: Request) {
       project_url,
       category_id,
       image_url,
-      sort_order: body.sort_order ?? 0,
+      sort_order: nextSortOrder,
     })
     .select(
       "id, title, description, content_image_url, youtube_url, project_url, category_id, image_url, sort_order"

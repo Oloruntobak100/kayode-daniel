@@ -6,16 +6,22 @@ import { createServiceRoleClient, isSupabaseConfigured } from "@/lib/supabase/se
 export type PortfolioProjectsSource = "supabase" | "static";
 
 function staticFallback(): ShowcaseProject[] {
-  return portfolioShowcaseProjects.map((p) => ({
-    id: p.id,
-    title: p.title,
-    description: "",
-    categoryId: p.categoryId,
-    imageSrc: p.imageSrc,
-    contentImageUrl: null,
-    youtubeUrl: null,
-    projectUrl: null,
-  }));
+  const ordinalInCategory = new Map<string, number>();
+  return portfolioShowcaseProjects.map((p) => {
+    const next = ordinalInCategory.get(p.categoryId) ?? 0;
+    ordinalInCategory.set(p.categoryId, next + 1);
+    return {
+      id: p.id,
+      title: p.title,
+      description: "",
+      categoryId: p.categoryId,
+      sortOrder: next,
+      imageSrc: p.imageSrc,
+      contentImageUrl: null,
+      youtubeUrl: null,
+      projectUrl: null,
+    };
+  });
 }
 
 export async function getPortfolioShowcaseProjects(): Promise<ShowcaseProject[]> {

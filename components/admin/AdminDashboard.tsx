@@ -1,9 +1,13 @@
 "use client";
 
-import { ChevronDown, ChevronRight } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { projectPortfolioCategories } from "@/lib/portfolio-source";
-import { showcaseCategoryIds } from "@/lib/portfolio-categories";
 import { cn } from "@/lib/utils";
 
 type AdminProject = {
@@ -36,7 +40,7 @@ const emptyForm = (): FormState => ({
   content_image_url: "",
   youtube_url: "",
   project_url: "",
-  category_id: showcaseCategoryIds[0] ?? "saas-web-app",
+  category_id: "saas-web-app",
   sort_order: 0,
 });
 
@@ -53,9 +57,9 @@ export default function AdminDashboard({ embedded = false }: Props) {
   const [saving, setSaving] = useState(false);
   const [uploadingContent, setUploadingContent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  /** Category ids in this set have their project list expanded (default: none → all collapsed) */
+  /** Category ids in this set have their project list expanded */
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(
-    () => new Set()
+    () => new Set(["saas-web-app"])
   );
   const contentFileRef = useRef<HTMLInputElement>(null);
 
@@ -228,6 +232,13 @@ export default function AdminDashboard({ embedded = false }: Props) {
       list.push(p);
       byCat.set(p.category_id, list);
     }
+    for (const [key, list] of Array.from(byCat.entries())) {
+      list.sort((a, b) => {
+        if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+        return a.id.localeCompare(b.id);
+      });
+      byCat.set(key, list);
+    }
     const known = categoryOptions
       .map((c) => ({ label: c.label, id: c.id, items: byCat.get(c.id) ?? [] }))
       .filter((g) => g.items.length > 0);
@@ -240,6 +251,43 @@ export default function AdminDashboard({ embedded = false }: Props) {
     }
     return [...known, ...extra];
   }, [projects, categoryOptions]);
+
+  const reorderInCategory = useCallback(
+    async (categoryId: string, index: number, direction: "up" | "down") => {
+      const group = groupedProjects.find((g) => g.id === categoryId);
+      if (!group) return;
+      const sorted = [...group.items];
+      const nextIndex = direction === "up" ? index - 1 : index + 1;
+      if (nextIndex < 0 || nextIndex >= sorted.length) return;
+      const reordered = [...sorted];
+      const [moved] = reordered.splice(index, 1);
+      reordered.splice(nextIndex, 0, moved);
+
+      setSaving(true);
+      setMessage(null);
+      try {
+        const responses = await Promise.all(
+          reordered.map((p, i) =>
+            fetch(`/api/admin/projects/${p.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ sort_order: i }),
+            })
+          )
+        );
+        const bad = responses.find((r) => !r.ok);
+        if (bad) {
+          const j = (await bad.json().catch(() => ({}))) as { error?: string };
+          setMessage(j.error ?? "Reorder failed");
+          return;
+        }
+        await load();
+      } finally {
+        setSaving(false);
+      }
+    },
+    [groupedProjects, load]
+  );
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 md:px-8">
@@ -319,13 +367,13 @@ export default function AdminDashboard({ embedded = false }: Props) {
                     </button>
                     {isExpanded ? (
                       <ul className="space-y-2 border-t border-black/[0.06] px-2 py-2">
-                        {group.items.map((p) => (
-                          <li key={p.id}>
+                        {group.items.map((p, idx) => (
+                          <li key={p.id} className="flex gap-1">
                             <button
                               type="button"
                               onClick={() => selectProject(p)}
                               className={cn(
-                                "min-h-[48px] w-full touch-manipulation rounded-xl border px-3 py-2.5 text-left text-sm transition",
+                                "min-h-[48px] min-w-0 flex-1 touch-manipulation rounded-xl border px-3 py-2.5 text-left text-sm transition",
                                 form.id === p.id
                                   ? "border-accent/45 bg-accent/10 shadow-soft"
                                   : "border-black/10 bg-white/60 hover:border-black/20"
@@ -333,6 +381,36 @@ export default function AdminDashboard({ embedded = false }: Props) {
                             >
                               <span className="font-medium">{p.title}</span>
                             </button>
+                            <div className="flex shrink-0 flex-col justify-center gap-0.5 border-l border-black/[0.06] pl-1">
+                              <button
+                                type="button"
+                                disabled={saving || idx === 0}
+                                title="Move up in category"
+                                aria-label={`Move ${p.title} up`}
+                                className="rounded-md p-1.5 text-muted hover:bg-black/[0.06] hover:text-foreground disabled:opacity-30"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void reorderInCategory(group.id, idx, "up");
+                                }}
+                              >
+                                <ArrowUp className="h-4 w-4" aria-hidden />
+                              </button>
+                              <button
+                                type="button"
+                                disabled={
+                                  saving || idx === group.items.length - 1
+                                }
+                                title="Move down in category"
+                                aria-label={`Move ${p.title} down`}
+                                className="rounded-md p-1.5 text-muted hover:bg-black/[0.06] hover:text-foreground disabled:opacity-30"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void reorderInCategory(group.id, idx, "down");
+                                }}
+                              >
+                                <ArrowDown className="h-4 w-4" aria-hidden />
+                              </button>
+                            </div>
                           </li>
                         ))}
                       </ul>
@@ -489,6 +567,10 @@ export default function AdminDashboard({ embedded = false }: Props) {
                 }
                 className="w-full max-w-[12rem] rounded-xl border border-black/12 bg-white/90 px-3 py-2 text-base outline-none ring-accent/30 focus:ring-2 sm:text-sm"
               />
+              <p className="text-xs text-muted">
+                Lower numbers appear first on the public Projects page. Use the ↑↓ buttons
+                next to each project in the list to swap order within the same category.
+              </p>
             </label>
 
             <div className="flex flex-wrap gap-2">

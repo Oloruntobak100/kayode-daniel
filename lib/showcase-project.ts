@@ -8,6 +8,8 @@ export type ShowcaseProject = {
   title: string;
   description: string;
   categoryId: ProjectPortfolioCategoryId;
+  /** Order within `categoryId` (admin reorder); lower first */
+  sortOrder: number;
   imageSrc: string;
   /** Optional detail / gallery image shown in the project dialog */
   contentImageUrl: string | null;
@@ -45,6 +47,7 @@ export function rowToShowcase(row: PortfolioProjectRow): ShowcaseProject {
     title: row.title,
     description: row.description ?? "",
     categoryId: row.category_id as ShowcaseProject["categoryId"],
+    sortOrder: row.sort_order ?? 0,
     imageSrc,
     contentImageUrl: row.content_image_url,
     youtubeUrl: row.youtube_url?.trim() || null,

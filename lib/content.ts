@@ -39,6 +39,7 @@ export const profile = {
 
 /** Re-export structured source blocks for rich Me / future sections */
 export {
+  defaultPortfolioCategoryFilter,
   elevatorPitch,
   enterpriseSystems,
   experienceNotableProjectsTitle,

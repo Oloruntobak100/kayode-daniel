@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import ShowcaseProjectCard from "@/components/ui/ShowcaseProjectCard";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import {
+  defaultPortfolioCategoryFilter,
   projectPortfolioCategories,
 } from "@/lib/content";
 import type { PortfolioProjectsSource } from "@/lib/portfolio-projects";
@@ -61,11 +62,31 @@ export default function Projects({
   }, []);
 
   const [activeFilter, setActiveFilter] =
-    useState<ProjectPortfolioCategoryId>("all");
+    useState<ProjectPortfolioCategoryId>(defaultPortfolioCategoryFilter);
 
   const filtered = useMemo(() => {
-    if (activeFilter === "all") return [...items];
-    return items.filter((p) => p.categoryId === activeFilter);
+    const tabIndex = new Map(
+      projectPortfolioCategories.map((c, i) => [c.id, i])
+    );
+    const list =
+      activeFilter === "all"
+        ? [...items]
+        : items.filter((p) => p.categoryId === activeFilter);
+    list.sort((a, b) => {
+      if (activeFilter !== "all") {
+        return (
+          a.sortOrder - b.sortOrder ||
+          a.id.localeCompare(b.id)
+        );
+      }
+      const ai = tabIndex.get(a.categoryId) ?? 999;
+      const bi = tabIndex.get(b.categoryId) ?? 999;
+      if (ai !== bi) return ai - bi;
+      return (
+        a.sortOrder - b.sortOrder || a.id.localeCompare(b.id)
+      );
+    });
+    return list;
   }, [activeFilter, items]);
 
   const isLive = source === "supabase" && items.length > 0;
