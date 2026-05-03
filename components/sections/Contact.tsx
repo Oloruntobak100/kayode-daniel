@@ -11,9 +11,18 @@ import {
 } from "@/components/icons/BrandIcons";
 import MagneticWrap from "@/components/MagneticWrap";
 import MagneticButton from "@/components/ui/MagneticButton";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { socialLinks } from "@/lib/content";
+import {
+  buildWhatsAppChatUrl,
+  contactPageWhatsAppPrefill,
+} from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
+
+const contactWhatsAppHref = buildWhatsAppChatUrl(
+  contactPageWhatsAppPrefill()
+);
 
 type Notice = {
   tone: "success" | "error";
@@ -101,7 +110,7 @@ export default function Contact() {
           reply with next steps.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           {socialLinks.map((s) => {
             const Icon = ICONS[s.icon];
             return (
@@ -118,7 +127,22 @@ export default function Contact() {
               </MagneticWrap>
             );
           })}
+          <MagneticWrap>
+            <Link
+              href={contactWhatsAppHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              className="glass-panel inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[#25D366]/35 bg-[#25D366]/12 text-[#128C7E] shadow-sm transition hover:border-[#25D366]/55 hover:bg-[#25D366]/18"
+            >
+              <WhatsAppIcon className="h-6 w-6" />
+            </Link>
+          </MagneticWrap>
         </div>
+        <p className="mt-4 max-w-xl text-xs leading-relaxed text-muted">
+          Prefer WhatsApp? Tap the icon — your message will include that you’re
+          writing from this contact page.
+        </p>
       </motion.div>
 
       <motion.div variants={staggerItem} className="space-y-5">
