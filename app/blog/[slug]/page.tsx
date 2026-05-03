@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
           className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4 text-accent" aria-hidden />
-          Back to site
+          Get to know Kayode Daniel
         </Link>
 
         <article className="mt-10">
