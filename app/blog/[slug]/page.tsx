@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Clock3, House } from "lucide-react";
+import { ArrowLeft, Clock3, House } from "lucide-react";
 import type { Metadata } from "next";
 import BlogMarkdown from "@/components/blog/BlogMarkdown";
 import { getPublishedPostBySlug } from "@/lib/blog";
@@ -63,15 +63,25 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-content px-4 py-10 pb-24 pt-[calc(5rem+env(safe-area-inset-top))] sm:px-6 md:py-14">
-        <Link
-          href="/"
-          aria-label="Kayode Daniel — portfolio home"
-          title="Kayode Daniel — portfolio home"
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-black/10 bg-white/60 px-3 py-2 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
-        >
-          <House className="h-5 w-5 shrink-0 text-accent" strokeWidth={2} aria-hidden />
-          <span>Kayode Daniel</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/blog"
+            aria-label="Back to all blog posts"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-black/10 bg-white/60 px-3 py-2 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
+          >
+            <ArrowLeft className="h-5 w-5 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+            <span>Writing</span>
+          </Link>
+          <Link
+            href="/"
+            aria-label="Kayode Daniel — portfolio home"
+            title="Kayode Daniel — portfolio home"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-black/10 bg-white/60 px-3 py-2 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm transition hover:border-accent/35 hover:text-foreground"
+          >
+            <House className="h-5 w-5 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+            <span>Kayode Daniel</span>
+          </Link>
+        </div>
 
         <article className="mt-10">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
