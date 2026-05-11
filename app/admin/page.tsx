@@ -3,10 +3,13 @@
 import { useState } from "react";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import BlogAdmin from "@/components/admin/BlogAdmin";
+import GigBannerAdmin from "@/components/admin/GigBannerAdmin";
 import { cn } from "@/lib/utils";
 
 export default function AdminPage() {
-  const [tab, setTab] = useState<"portfolio" | "blog">("portfolio");
+  const [tab, setTab] = useState<"portfolio" | "blog" | "gig-banner">(
+    "portfolio"
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,10 +55,28 @@ export default function AdminPage() {
           >
             Blog
           </button>
+          <button
+            type="button"
+            onClick={() => setTab("gig-banner")}
+            className={cn(
+              "rounded-t-lg px-4 py-2.5 text-sm font-medium transition",
+              tab === "gig-banner"
+                ? "bg-white/80 text-foreground shadow-soft"
+                : "text-muted hover:text-foreground"
+            )}
+          >
+            Gig banner
+          </button>
         </div>
       </header>
 
-      {tab === "portfolio" ? <AdminDashboard embedded /> : <BlogAdmin />}
+      {tab === "portfolio" ? (
+        <AdminDashboard embedded />
+      ) : tab === "blog" ? (
+        <BlogAdmin />
+      ) : (
+        <GigBannerAdmin />
+      )}
     </div>
   );
 }
