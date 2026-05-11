@@ -151,5 +151,14 @@ export async function composeGigBanner(
   );
   composites.push({ input: titleSvg, left: 0, top: 0 });
 
-  return sharp(backgroundBuffer).composite(composites).png({ compressionLevel: 9 }).toBuffer();
+  /** Fal may return ± a few pixels; overlays are WxH — normalize base first or Sharp errors. */
+  const normalizedBg = await sharp(backgroundBuffer)
+    .resize(W, H, { fit: "cover", position: "centre" })
+    .ensureAlpha()
+    .toBuffer();
+
+  return sharp(normalizedBg)
+    .composite(composites)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 }
