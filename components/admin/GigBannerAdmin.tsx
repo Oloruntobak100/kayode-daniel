@@ -67,11 +67,14 @@ export default function GigBannerAdmin() {
               Generated at{" "}
               <span className="font-medium text-foreground">
                 {FIVERR_GIG_BANNER_WIDTH}×{FIVERR_GIG_BANNER_HEIGHT}px
-              </span>{" "}
-              (Fiverr gig image size). Minimal layout; optional tech keywords add
-              a single logo row. Powered by{" "}
-              <span className="font-medium text-foreground">Fal</span>{" "}
-              (Flux Schnell).
+              </span>
+              .{" "}
+              <span className="font-medium text-foreground">Fal</span> draws a
+              dark abstract background only; your{" "}
+              <span className="font-medium text-foreground">title is typeset</span>{" "}
+              exactly as entered, and keywords use{" "}
+              <span className="font-medium text-foreground">Simple Icons</span>{" "}
+              (real brand marks on the right).
             </p>
           </div>
         </div>
@@ -105,8 +108,9 @@ export default function GigBannerAdmin() {
                 disabled={generating}
               />
               <span className="mt-1.5 block text-xs text-muted">
-                Used for one slim row of brand-style logos. Leave empty for an
-                abstract banner with no icons.
+                Comma-separated tech stack names (e.g. React, Next.js, Vercel).
+                Icons load from Simple Icons — spell names clearly so they map
+                to known brands.
               </span>
             </label>
 
@@ -136,8 +140,8 @@ export default function GigBannerAdmin() {
             ) : null}
 
             <p className="text-xs leading-relaxed text-muted">
-              AI-rendered headlines and logos can occasionally look imperfect.
-              Regenerate or tweak keywords if needed. Requires{" "}
+              If an icon is missing, try another spelling (e.g. “Next.js” not
+              “next js”). Requires{" "}
               <code className="rounded bg-black/5 px-1 py-0.5 text-[11px]">
                 FAL_KEY
               </code>{" "}

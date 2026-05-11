@@ -2,11 +2,12 @@ import { randomUUID } from "crypto";
 import { fal } from "@fal-ai/client";
 import { NextResponse } from "next/server";
 import {
-  buildGigBannerPrompt,
+  buildGigBannerBackgroundPrompt,
   FIVERR_GIG_BANNER_HEIGHT,
   FIVERR_GIG_BANNER_WIDTH,
   parseGigKeywords,
 } from "@/lib/gig-banner-prompt";
+import { composeGigBanner } from "@/lib/gig-banner-compose";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   const keywords = parseGigKeywords(keywordsRaw);
-  const prompt = buildGigBannerPrompt(title, keywords);
+  const prompt = buildGigBannerBackgroundPrompt();
 
   fal.config({ credentials: falKey });
 
@@ -84,19 +85,19 @@ export async function POST(request: Request) {
     );
   }
 
-  const buf = Buffer.from(await imgRes.arrayBuffer());
-  const rawType = imgRes.headers.get("content-type") || "";
-  const contentType = rawType.startsWith("image/")
-    ? rawType
-    : "image/jpeg";
-  const ext =
-    contentType.includes("png")
-      ? "png"
-      : contentType.includes("webp")
-        ? "webp"
-        : "jpg";
+  const bgBuf = Buffer.from(await imgRes.arrayBuffer());
 
-  const path = `gig-banners/${randomUUID()}.${ext}`;
+  let buf: Buffer;
+  try {
+    buf = await composeGigBanner(bgBuf, title, keywords);
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Failed to compose banner";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+
+  const contentType = "image/png";
+  const path = `gig-banners/${randomUUID()}.png`;
 
   const { error: uploadError } = await supabase.storage
     .from("portfolio-thumbnails")
